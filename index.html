@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Study — Information Search Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --ink: #12241f;
+        --ink-soft: #2a4038;
+        --muted: #5c7269;
+        --line: rgba(18, 36, 31, 0.12);
+        --panel: rgba(255, 252, 247, 0.86);
+        --panel-solid: #fffcf7;
+        --teal: #0f766e;
+        --teal-deep: #0b5a54;
+        --amber: #d97706;
+        --amber-deep: #b45309;
+        --rose: #be123c;
+        --ok: #047857;
+        --radius: 18px;
+        --shadow-soft: 0 18px 50px rgba(18, 36, 31, 0.08);
+        --font-display: "Fraunces", Georgia, serif;
+        --font-body: "Sora", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-body);
+        color: var(--ink);
+        background:
+            radial-gradient(1200px 700px at 12% -10%, rgba(15, 118, 110, 0.22), transparent 55%),
+            radial-gradient(900px 600px at 100% 0%, rgba(217, 119, 6, 0.16), transparent 50%),
+            radial-gradient(800px 500px at 70% 110%, rgba(15, 118, 110, 0.12), transparent 45%),
+            linear-gradient(165deg, #e7f2ee 0%, #f4efe6 48%, #eef6f3 100%);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.35;
+        background-image:
+            linear-gradient(rgba(18, 36, 31, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(18, 36, 31, 0.03) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+        z-index: 0;
+    }
+
+    .orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.45;
+        pointer-events: none;
+        z-index: 0;
+        animation: drift 14s ease-in-out infinite alternate;
+    }
+
+    .orb-a {
+        width: 280px;
+        height: 280px;
+        background: #99f6e4;
+        top: 12%;
+        left: -60px;
+    }
+
+    .orb-b {
+        width: 220px;
+        height: 220px;
+        background: #fcd34d;
+        right: -40px;
+        top: 40%;
+        animation-delay: -4s;
+    }
+
+    @keyframes drift {
+        from { transform: translateY(0) scale(1); }
+        to { transform: translateY(28px) scale(1.06); }
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 5px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background: rgba(18, 36, 31, 0.08);
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 16.67%;
+        background: linear-gradient(90deg, var(--teal), #14b8a6);
+        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .shell {
+        position: relative;
+        z-index: 1;
+        width: min(860px, calc(100% - 28px));
+        margin: 48px auto 64px;
+    }
+
+    .brand-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        animation: rise 0.7s ease both;
+    }
+
+    .brand-mark {
+        font-family: var(--font-display);
+        font-size: clamp(1.35rem, 3vw, 1.7rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+    }
+
+    .brand-mark span {
+        color: var(--teal);
+    }
+
+    .step-chip {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .panel {
+        background: var(--panel);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: calc(var(--radius) + 6px);
+        box-shadow: var(--shadow-soft);
+        padding: clamp(28px, 5vw, 48px);
+        animation: rise 0.75s ease both;
+    }
+
+    @keyframes rise {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step { display: none; }
+    .step.active {
+        display: block;
+        animation: stepIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes stepIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-kicker {
+        display: inline-block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--teal-deep);
+        margin-bottom: 14px;
+    }
+
+    h2 {
+        font-family: var(--font-display);
+        font-size: clamp(1.85rem, 4.4vw, 2.55rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        color: var(--ink);
+        margin: 0 0 14px;
+        text-align: center;
+    }
+
+    .step-hero h2 {
+        text-align: left;
+        max-width: 14ch;
+    }
+
+    p.intro-text {
+        text-align: center;
+        color: var(--muted);
+        margin: 0 0 28px;
+        font-size: 1.02rem;
+    }
+
+    .step-hero .lede {
+        text-align: left;
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 42ch;
+        margin: 0 0 28px;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(217, 119, 6, 0.08));
+        border: 1px solid var(--line);
+        padding: 18px 20px;
+        border-radius: 14px;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+        margin-bottom: 28px;
+    }
+
+    .form-group { margin-bottom: 22px; }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--ink-soft);
+        font-size: 0.92rem;
+    }
+
+    input[type="text"], select {
+        width: 100%;
+        padding: 13px 15px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        font-size: 0.98rem;
+        font-family: inherit;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.9);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="text"]:focus, select:focus {
+        outline: none;
+        border-color: var(--teal);
+        box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.14);
+    }
+
+    .ad-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 14px;
+        margin: 10px 0 8px;
+    }
+
+    .ad-btn {
+        position: relative;
+        overflow: hidden;
+        background: var(--panel-solid);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 28px 14px;
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--ink);
+        cursor: pointer;
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .ad-btn::after {
+        content: "Watch";
+        display: block;
+        margin-top: 8px;
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    .ad-btn:hover {
+        transform: translateY(-4px);
+        border-color: var(--teal);
+        background: linear-gradient(180deg, #ffffff, #e8f7f4);
+    }
+
+    .ad-viewport {
+        background: #0b1c18;
+        color: #9fb3ab;
+        width: 100%;
+        min-height: 340px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        margin-bottom: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .ad-viewport video {
+        width: 100%;
+        max-height: 420px;
+        display: block;
+        background: #000;
+    }
+
+    .section-label {
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        margin: 0 0 22px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+    }
+
+    .question-block {
+        margin-bottom: 28px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .question-text {
+        font-weight: 600;
+        margin-bottom: 18px;
+        font-size: 1.02rem;
+        color: var(--ink);
+    }
+
+    .scale-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .scale-anchor {
+        width: 18%;
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .scale-options {
+        display: flex;
+        justify-content: space-between;
+        width: 60%;
+    }
+
+    .scale-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .scale-option input {
+        appearance: none;
+        background: #fff;
+        margin: 0 0 6px;
+        width: 22px;
+        height: 22px;
+        border: 2px solid rgba(18, 36, 31, 0.18);
+        border-radius: 50%;
+        display: grid;
+        place-content: center;
+        cursor: pointer;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+        color: var(--teal);
+    }
+
+    .scale-option input::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        background: currentColor;
+    }
+
+    .scale-option input:checked {
+        border-color: var(--teal);
+        transform: scale(1.08);
+    }
+
+    .scale-option input:checked::before { transform: scale(1); }
+
+    .scale-option span {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 500;
+    }
+
+    .semantic-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed var(--line);
+    }
+
+    .semantic-left, .semantic-right {
+        width: 20%;
+        font-size: 0.86rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+    }
+
+    .semantic-left { text-align: right; padding-right: 12px; }
+    .semantic-right { text-align: left; padding-left: 12px; }
+
+    .search-container {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-top: 18px;
+        background: rgba(255,255,255,0.72);
+    }
+
+    .search-tabs {
+        display: flex;
+        background: rgba(15, 118, 110, 0.06);
+        border-bottom: 1px solid var(--line);
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 14px 10px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 0.9rem;
+        transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .tab-btn.active {
+        background: #fff;
+        color: var(--teal-deep);
+        box-shadow: inset 0 -3px 0 var(--teal);
+    }
+
+    .tab-content {
+        padding: 22px;
+        min-height: 260px;
+        display: none;
+    }
+
+    .tab-content.active { display: block; animation: stepIn 0.35s ease; }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 34px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .step-hero .button-container { justify-content: flex-start; }
+
+    .action-btn {
+        background: var(--teal);
+        color: #fff;
+        border: none;
+        padding: 14px 28px;
+        font-size: 0.98rem;
+        font-weight: 600;
+        font-family: inherit;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .action-btn:hover {
+        background: var(--teal-deep);
+        transform: translateY(-1px);
+    }
+
+    .action-btn:active { transform: scale(0.98); }
+
+    .action-btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .action-btn.amber { background: var(--amber); }
+    .action-btn.amber:hover { background: var(--amber-deep); }
+    .action-btn.rose { background: var(--rose); }
+    .action-btn.ok { background: var(--ok); }
+
+    #recording-indicator {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: rgba(190, 18, 60, 0.08);
+        color: var(--rose);
+        border: 1px solid rgba(190, 18, 60, 0.2);
+        padding: 11px 14px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+        font-weight: 600;
+        font-size: 0.88rem;
+    }
+
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--rose);
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(0.9); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.45; }
+        100% { transform: scale(0.9); opacity: 1; }
+    }
+
+    #submit-status {
+        display: none;
+        margin-top: 18px;
+        padding: 13px 14px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.92rem;
+    }
+
+    #submit-status.info {
+        display: block;
+        background: rgba(15, 118, 110, 0.1);
+        color: var(--teal-deep);
+        border: 1px solid rgba(15, 118, 110, 0.2);
+    }
+
+    #submit-status.ok {
+        display: block;
+        background: rgba(4, 120, 87, 0.1);
+        color: var(--ok);
+        border: 1px solid rgba(4, 120, 87, 0.22);
+    }
+
+    #submit-status.err {
+        display: block;
+        background: rgba(190, 18, 60, 0.08);
+        color: var(--rose);
+        border: 1px solid rgba(190, 18, 60, 0.2);
+    }
+
+    .footer-note {
+        margin-top: 16px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+        .shell { margin-top: 28px; }
+        .scale-row, .semantic-row { flex-direction: column; gap: 10px; }
+        .scale-anchor, .semantic-left, .semantic-right, .scale-options { width: 100%; }
+        .semantic-left, .semantic-right { text-align: center; padding: 0; }
+        .step-hero h2 { max-width: none; }
+        .search-tabs { flex-direction: column; }
+    }
+</style>
+</head>
+<body>
+
+<div class="orb orb-a" aria-hidden="true"></div>
+<div class="orb orb-b" aria-hidden="true"></div>
+
+<div class="progress-bar-container">
+    <div id="survey-progress" class="progress-bar"></div>
+</div>
+
+<div class="shell">
+    <div class="brand-row">
+        <div class="brand-mark">Search <span>Study</span></div>
+        <div class="step-chip" id="step-label">Step 1 of 6</div>
+    </div>
+
+    <div id="recording-indicator">
+        <div class="pulse-dot"></div> Screen recording active
+    </div>
+
+    <div class="panel">
+
+        <!-- STEP 1 -->
+        <div id="step-1" class="step active step-hero">
+            <div class="hero-kicker">Academic research survey</div>
+            <h2>How do you search before you buy?</h2>
+            <p class="lede">
+                A short guided study on ads, curiosity, and the paths people take to decide.
+                Your screen is recorded so researchers can learn from real behaviour.
+            </p>
+
+            <div class="info-box">
+                Takes about 10–15 minutes. Please complete every section in one sitting.
+            </div>
+
+            <div class="form-group">
+                <label for="fullname">1. Full Name</label>
+                <input type="text" id="fullname" placeholder="Enter your full name" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label for="age">2. Age</label>
+                <select id="age">
+                    <option value="">Select age range</option>
+                    <option value="18-20">18 – 20</option>
+                    <option value="21-24">21 – 24</option>
+                    <option value="25-29">25 – 29</option>
+                    <option value="30-34">30 – 34</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">3. Gender</label>
+                <select id="gender">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="education">4. Educational Level</label>
+                <select id="education">
+                    <option value="">Select education level</option>
+                    <option value="Higher Secondary">Higher Secondary (10+2)</option>
+                    <option value="Diploma">Diploma</option>
+                    <option value="Undergraduate">Undergraduate (Bachelor's Degree)</option>
+                    <option value="Postgraduate">Postgraduate (Master's Degree)</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="frequency">5. How often do you purchase products or services online?</label>
+                <select id="frequency">
+                    <option value="">Select frequency</option>
+                    <option value="Never">Never</option>
+                    <option value="Less than once a month">Less than once a month</option>
+                    <option value="Once a month">Once a month</option>
+                    <option value="2-3 times per month">2 – 3 times per month</option>
+                    <option value="4-6 times per month">4 – 6 times per month</option>
+                    <option value="7-10 times per month">7 – 10 times per month</option>
+                    <option value="Very Frequently">Very Frequently (More than 10 times per month)</option>
+                </select>
+            </div>
+
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="startSurvey()">Start &amp; allow screen share</button>
+            </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div id="step-2" class="step">
+            <h2>Pick one advertisement</h2>
+            <p class="intro-text">Choose any ad to watch. You’ll answer a few questions right after.</p>
+            <div class="ad-grid">
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8</button>
+            </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div id="step-3" class="step">
+            <h2 id="current-ad-title">Ad Playback</h2>
+
+            <div class="ad-viewport">
+                <video id="ad-video" controls playsinline>
+                    Your browser does not support video playback.
+                </video>
+                <span id="ad-viewport-text" style="display:none; padding: 24px; text-align:center;">
+                    Video file not found yet. Place the ad file in the <code>ads/</code> folder.
+                </span>
+            </div>
+
+            <h3 class="section-label">Ad feedback</h3>
+
+            <div class="question-block">
+                <div class="question-text">1. I am familiar with this product/service.</div>
+                <div class="scale-row" data-scale="fb_q1"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">2. I know this product/service well.</div>
+                <div class="scale-row" data-scale="fb_q2"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">3. Compared with most people, I know more about this product/service.</div>
+                <div class="scale-row" data-scale="fb_q3"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">4. The advertisement provided facts about the product/service.</div>
+                <div class="scale-row" data-scale="fb_q4"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">5. The advertisement provided practical information about the product/service.</div>
+                <div class="scale-row" data-scale="fb_q5"></div>
+            </div>
+
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="continueFromFeedback()">Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div id="step-4" class="step">
+            <h2>Product category perceptions</h2>
+            <p class="intro-text">6. Think about this type of product/service in general. Pick the point that fits your view.</p>
+
+            <div class="semantic-row" data-scale="sem_1" data-left="Unimportant" data-right="Important"></div>
+            <div class="semantic-row" data-scale="sem_2" data-left="Irrelevant" data-right="Relevant"></div>
+            <div class="semantic-row" data-scale="sem_3" data-left="Means nothing to me" data-right="Means a lot to me"></div>
+            <div class="semantic-row" data-scale="sem_4" data-left="Worthless" data-right="Valuable"></div>
+            <div class="semantic-row" data-scale="sem_5" data-left="Not needed" data-right="Needed"></div>
+
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="continueFromSemantic()">Go to research task</button>
+            </div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div id="step-5" class="step">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
+                <h2 style="text-align:left; margin:0;">Information search</h2>
+                <button class="action-btn rose" type="button" style="padding:10px 16px; font-size:0.85rem;" onclick="rewatchAd()">Rewatch ad</button>
+            </div>
+
+            <div class="info-box">
+                Imagine you plan to buy this product/service. Use Google Search, the AI chatbot, or official links to gather information before you decide.
+            </div>
+
+            <div class="search-container">
+                <div class="search-tabs">
+                    <button class="tab-btn active" type="button" onclick="switchSearchTab(event, 'tab-google')">Google Search</button>
+                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-chatbot')">AI Chatbot</button>
+                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-official')">Official Links</button>
+                </div>
+
+                <div id="tab-google" class="tab-content active">
+                    <div style="display:flex; margin-bottom:15px; gap:0;">
+                        <input type="text" id="google-input" placeholder="Search product specs..." style="border-radius:12px 0 0 12px;">
+                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeMockSearch()">Search</button>
+                    </div>
+                    <div id="google-results" style="color: var(--muted); font-size: 0.92rem; line-height: 1.55;">
+                        Enter a query to run a simulated Google search.
+                    </div>
+                </div>
+
+                <div id="tab-chatbot" class="tab-content">
+                    <div id="chat-box" style="border:1px solid var(--line); height:160px; overflow-y:auto; padding:12px; margin-bottom:12px; background:#fff; font-size:0.92rem; border-radius:12px;">
+                        <p style="color:var(--muted); margin:0;"><strong>AI Chatbot:</strong> Hello! Ask me anything about the product in the advertisement.</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="chat-input" placeholder="Ask AI a question..." style="flex:1;">
+                        <button class="action-btn" type="button" style="padding:12px 18px;" onclick="sendChatMessage()">Send</button>
+                    </div>
+                </div>
+
+                <div id="tab-official" class="tab-content">
+                    <h4 style="margin-top:0; color:var(--ink); font-family:var(--font-display);">Official vendor directory</h4>
+                    <ul style="padding-left: 20px; line-height: 2; margin:0;">
+                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Technical Specifications Manual'); return false;">Technical Specifications Manual</a></li>
+                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Regional Pricing & Subscription Plans'); return false;">Regional Pricing &amp; Subscription Plans</a></li>
+                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Implementation FAQs & Setup Guides'); return false;">Implementation FAQs &amp; Setup Guides</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="goToStep(6)">Proceed to final questions</button>
+            </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div id="step-6" class="step">
+            <h2>Purchase intention</h2>
+            <p class="intro-text">Select the numbers that best match your likelihood of purchasing.</p>
+
+            <div class="question-block">
+                <div class="question-text">7. If I were going to purchase this type of product/service, I would consider purchasing the selected product/service.</div>
+                <div class="scale-row" data-scale="pi_q7"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">8. If I were shopping for this type of product/service, the likelihood that I would purchase the selected product/service is high.</div>
+                <div class="scale-row" data-scale="pi_q8"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">9. My willingness to purchase the selected product/service would be high.</div>
+                <div class="scale-row" data-scale="pi_q9"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">10. The probability that I would consider purchasing the selected product/service is high.</div>
+                <div class="scale-row" data-scale="pi_q10"></div>
+            </div>
+
+            <div class="button-container">
+                <button id="submit-btn" class="action-btn ok" type="button" onclick="submitSurvey()">Submit survey</button>
+            </div>
+            <div id="submit-status"></div>
+        </div>
+
+    </div>
+
+    <p class="footer-note">Search Study · Academic information-search research</p>
+</div>
+
+<script>
+    const APPS_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+    const AD_VIDEOS = {
+        'Ad 1': 'ads/ad1.mp4',
+        'Ad 2': 'ads/ad2.mp4',
+        'Ad 3': 'ads/ad3.mp4',
+        'Ad 4': 'ads/ad4.mp4',
+        'Ad 5': 'ads/ad5.mp4',
+        'Ad 6': 'ads/ad6.mp4',
+        'Ad 7': 'ads/ad7.mp4',
+        'Ad 8': 'ads/ad8.mp4'
+    };
+
+    let recorder = null;
+    let chunks = [];
+    let stream = null;
+    let selectedAdName = '';
+    let finalVideoBlob = null;
+    let googleSearches = [];
+    let chatMessages = [];
+    let officialClicks = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        buildLikertScales();
+        buildSemanticScales();
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+        document.getElementById('google-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') executeMockSearch();
+        });
+    });
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function buildLikertScales() {
+        document.querySelectorAll('.scale-row[data-scale]').forEach((row) => {
+            const name = row.dataset.scale;
+            row.innerHTML = `
+                <span class="scale-anchor">Strongly Disagree</span>
+                <div class="scale-options">
+                    ${[1,2,3,4,5,6,7].map((n) => `
+                        <label class="scale-option">
+                            <input type="radio" name="${name}" value="${n}"><span>${n}</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <span class="scale-anchor">Strongly Agree</span>
+            `;
+        });
+    }
+
+    function buildSemanticScales() {
+        document.querySelectorAll('.semantic-row[data-scale]').forEach((row) => {
+            const name = row.dataset.scale;
+            row.innerHTML = `
+                <div class="semantic-left">${escapeHtml(row.dataset.left)}</div>
+                <div class="scale-options">
+                    ${[1,2,3,4,5,6,7].map((n) => `
+                        <label class="scale-option">
+                            <input type="radio" name="${name}" value="${n}"><span>${n}</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <div class="semantic-right">${escapeHtml(row.dataset.right)}</div>
+            `;
+        });
+    }
+
+    function getRadioValue(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : '';
+    }
+
+    function requireRadios(names, message) {
+        for (const name of names) {
+            if (!getRadioValue(name)) {
+                alert(message);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function goToStep(stepNumber) {
+        document.querySelectorAll('.step').forEach((step) => step.classList.remove('active'));
+        document.getElementById(`step-${stepNumber}`).classList.add('active');
+        document.getElementById('survey-progress').style.width = `${(stepNumber / 6) * 100}%`;
+        document.getElementById('step-label').textContent = `Step ${stepNumber} of 6`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function startSurvey() {
+        const name = document.getElementById('fullname').value.trim();
+        const age = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const education = document.getElementById('education').value;
+        const freq = document.getElementById('frequency').value;
+
+        if (!name || !age || !gender || !education || !freq) {
+            alert('Please complete the demographics profile to proceed.');
+            return;
+        }
+
+        try {
+            stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+            chunks = [];
+            finalVideoBlob = null;
+            recorder = new MediaRecorder(stream);
+
+            recorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) chunks.push(e.data);
+            };
+
+            stream.getVideoTracks()[0].addEventListener('ended', () => {
+                document.getElementById('recording-indicator').style.display = 'none';
+            });
+
+            recorder.start(1000);
+            document.getElementById('recording-indicator').style.display = 'flex';
+            goToStep(2);
+        } catch (err) {
+            console.error(err);
+            alert('This study requires screen recording permission. Please allow screen share and try again.');
+        }
+    }
+
+    function selectAd(adName) {
+        selectedAdName = adName;
+        document.getElementById('current-ad-title').innerText = `${adName}`;
+
+        const video = document.getElementById('ad-video');
+        const fallback = document.getElementById('ad-viewport-text');
+        const src = AD_VIDEOS[adName];
+
+        video.style.display = 'block';
+        fallback.style.display = 'none';
+        video.src = src;
+        video.load();
+
+        video.onerror = () => {
+            video.style.display = 'none';
+            fallback.style.display = 'block';
+            fallback.innerHTML = `Video for <strong>${escapeHtml(adName)}</strong> not found yet.<br>Expected: <code>${escapeHtml(src)}</code>`;
+        };
+
+        video.play().catch(() => {});
+        goToStep(3);
+    }
+
+    function continueFromFeedback() {
+        if (!requireRadios(['fb_q1','fb_q2','fb_q3','fb_q4','fb_q5'], 'Please answer all ad feedback questions.')) return;
+        document.getElementById('ad-video').pause();
+        goToStep(4);
+    }
+
+    function continueFromSemantic() {
+        if (!requireRadios(['sem_1','sem_2','sem_3','sem_4','sem_5'], 'Please complete all perception scales.')) return;
+        goToStep(5);
+    }
+
+    function rewatchAd() {
+        goToStep(3);
+        const video = document.getElementById('ad-video');
+        if (video.src) {
+            video.currentTime = 0;
+            video.play().catch(() => {});
+        }
+    }
+
+    function switchSearchTab(event, tabId) {
+        document.querySelectorAll('.tab-content').forEach((tab) => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        if (event && event.currentTarget) event.currentTarget.classList.add('active');
+    }
+
+    function executeMockSearch() {
+        const query = document.getElementById('google-input').value.trim();
+        const resultsBox = document.getElementById('google-results');
+        if (!query) {
+            resultsBox.textContent = 'Please enter a search string.';
+            return;
+        }
+
+        googleSearches.push(query);
+        const ad = escapeHtml(selectedAdName || 'Product');
+        const q = escapeHtml(query);
+        resultsBox.innerHTML = `
+            <div style="margin-bottom: 16px;">
+                <div style="color:var(--muted); font-size:0.8rem; margin-bottom:10px;">Simulated results for “${q}”</div>
+                <div style="color:#0f766e; font-weight:700; font-size:1.05rem; text-decoration:underline; cursor:pointer;">
+                    Official docs & reviews: ${ad}
+                </div>
+                <div style="color:#15803d; font-size:0.8rem; margin:2px 0;">www.official-vendor.com/product-specs</div>
+                <div style="color:var(--ink-soft);">Verified specifications and documentation for ${ad}.</div>
+            </div>
+            <div>
+                <div style="color:#0f766e; font-weight:700; font-size:1.05rem; text-decoration:underline; cursor:pointer;">
+                    Is ${ad} worth it?
+                </div>
+                <div style="color:#15803d; font-size:0.8rem; margin:2px 0;">www.techreviewportal.com/articles</div>
+                <div style="color:var(--ink-soft);">In-depth critique related to “${q}”.</div>
+            </div>
+        `;
+    }
+
+    function sendChatMessage() {
+        const chatInput = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+        const query = chatInput.value.trim();
+        if (!query) return;
+
+        chatMessages.push(query);
+        chatBox.innerHTML += `<p style="margin:4px 0;"><strong>You:</strong> ${escapeHtml(query)}</p>`;
+
+        setTimeout(() => {
+            const reply = `Regarding "${escapeHtml(query)}", ${escapeHtml(selectedAdName || 'the product')} uses a modern architecture. Ask if you want specs.`;
+            chatBox.innerHTML += `<p style="margin:4px 0; color:var(--teal-deep);"><strong>AI Chatbot:</strong> ${reply}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 700);
+
+        chatInput.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function trackOfficialClick(label) {
+        officialClicks.push(label);
+        alert(`Opened mock page: ${label}`);
+    }
+
+    function collectAnswers() {
+        return {
+            fullName: document.getElementById('fullname').value.trim(),
+            age: document.getElementById('age').value,
+            gender: document.getElementById('gender').value,
+            education: document.getElementById('education').value,
+            frequency: document.getElementById('frequency').value,
+            selectedAd: selectedAdName,
+            fb_q1: getRadioValue('fb_q1'),
+            fb_q2: getRadioValue('fb_q2'),
+            fb_q3: getRadioValue('fb_q3'),
+            fb_q4: getRadioValue('fb_q4'),
+            fb_q5: getRadioValue('fb_q5'),
+            sem_1: getRadioValue('sem_1'),
+            sem_2: getRadioValue('sem_2'),
+            sem_3: getRadioValue('sem_3'),
+            sem_4: getRadioValue('sem_4'),
+            sem_5: getRadioValue('sem_5'),
+            pi_q7: getRadioValue('pi_q7'),
+            pi_q8: getRadioValue('pi_q8'),
+            pi_q9: getRadioValue('pi_q9'),
+            pi_q10: getRadioValue('pi_q10'),
+            googleSearches,
+            chatMessages,
+            officialClicks
+        };
+    }
+
+    function stopRecording() {
+        return new Promise((resolve) => {
+            if (!recorder || recorder.state === 'inactive') {
+                resolve(finalVideoBlob);
+                return;
+            }
+
+            recorder.addEventListener('stop', () => {
+                if (chunks.length > 0) {
+                    finalVideoBlob = new Blob(chunks, { type: 'video/webm' });
+                }
+                resolve(finalVideoBlob);
+            }, { once: true });
+
+            try { recorder.stop(); } catch (e) { resolve(finalVideoBlob); }
+
+            if (stream) {
+                stream.getTracks().forEach((track) => {
+                    if (track.readyState === 'live') track.stop();
+                });
+            }
+
+            document.getElementById('recording-indicator').style.display = 'none';
+        });
+    }
+
+    function blobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    function downloadLocalBackup(blob) {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `survey-backup-${Date.now()}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function setStatus(type, message) {
+        const el = document.getElementById('submit-status');
+        el.className = type;
+        el.textContent = message;
+    }
+
+    async function submitSurvey() {
+        if (!requireRadios(['pi_q7','pi_q8','pi_q9','pi_q10'], 'Please answer all purchase intention questions.')) return;
+
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        setStatus('info', 'Stopping recording and preparing your submission...');
+
+        try {
+            const videoBlob = await stopRecording();
+            downloadLocalBackup(videoBlob);
+
+            const answers = collectAnswers();
+            let videoBase64 = '';
+            if (videoBlob) {
+                setStatus('info', 'Encoding recording for upload...');
+                videoBase64 = await blobToBase64(videoBlob);
+            }
+
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE_YOUR_')) {
+                setStatus('ok', 'Survey captured locally. Sheets/Drive will activate once Apps Script is configured.');
+                alert('Survey complete. A local video backup downloaded. Google Sheets/Drive is not connected yet.');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            setStatus('info', 'Uploading to Google Drive / Sheets...');
+
+            const payload = {
+                answers,
+                videoBase64,
+                mimeType: videoBlob ? (videoBlob.type || 'video/webm') : 'video/webm',
+                fileName: `survey-${(answers.fullName || 'participant').replace(/\s+/g, '_')}-${Date.now()}.webm`
+            };
+
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            if (!result.ok) throw new Error(result.error || 'Upload failed');
+
+            setStatus('ok', `Submitted successfully.${result.driveUrl ? ' Drive URL saved in the sheet.' : ''}`);
+            alert('Thank you! Your responses were saved.');
+            setTimeout(() => location.reload(), 1400);
+        } catch (err) {
+            console.error(err);
+            setStatus('err', 'Upload failed. A local video backup should still have downloaded.');
+            alert('Could not reach Google Sheets/Drive. Local backup downloaded.');
+            submitBtn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
