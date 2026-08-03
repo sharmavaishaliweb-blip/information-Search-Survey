@@ -899,9 +899,8 @@
             </div>
 
             <div class="info-box">
-                Gather information before deciding. Use real Google Search, the free AI chatbot, Amazon.in, Flipkart, or official links.
-                Pages open in the research browser below (and a dedicated browser window when a site blocks embedding) so your screen recording can capture them.
-                Prefer sharing your <strong>entire screen</strong> while recording.
+                Gather information before deciding. Everything stays <strong>inside this page</strong> so your screen recording captures it —
+                Google Search, the free AI chatbot (no login), Amazon.in, and Flipkart.
             </div>
 
             <div class="search-container">
@@ -921,7 +920,7 @@
 
                 <div id="tab-chatbot" class="tab-content">
                     <div id="chat-box">
-                        <p class="chat-row ai" style="margin:0;"><strong>AI:</strong> Hi! I’m a free research assistant. Ask me anything about the product in the ad.</p>
+                        <p class="chat-row ai" style="margin:0;"><strong>AI:</strong> Hi! I’m a free research assistant — no login needed. Ask me anything about the product in the ad.</p>
                     </div>
                     <div style="display:flex; gap:8px;">
                         <input type="text" id="chat-input" placeholder="Ask the AI a question..." style="flex:1;">
@@ -933,11 +932,11 @@
                     <div class="shop-grid">
                         <button class="shop-btn" type="button" onclick="openShop('amazon')">
                             Amazon.in
-                            <small>Open Amazon India in the research browser</small>
+                            <small>Opens inside this page</small>
                         </button>
                         <button class="shop-btn" type="button" onclick="openShop('flipkart')">
                             Flipkart
-                            <small>Open Flipkart in the research browser</small>
+                            <small>Opens inside this page</small>
                         </button>
                         <button class="shop-btn" type="button" onclick="openShop('amazon-search')">
                             Search on Amazon
@@ -952,8 +951,8 @@
 
                 <div id="tab-official" class="tab-content">
                     <ul class="link-list">
-                        <li><button type="button" onclick="openOfficialLink('https://www.amazon.in', 'Amazon.in homepage')">Amazon.in — homepage</button></li>
-                        <li><button type="button" onclick="openOfficialLink('https://www.flipkart.com', 'Flipkart homepage')">Flipkart.com — homepage</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.amazon.in/', 'Amazon.in homepage')">Amazon.in — homepage</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.flipkart.com/', 'Flipkart homepage')">Flipkart.com — homepage</button></li>
                         <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=product+specifications+reviews', 'Specs & reviews search')">Google — specs &amp; reviews</button></li>
                     </ul>
                 </div>
@@ -965,15 +964,18 @@
                     <button type="button" title="Reload" onclick="browserReload()">↻</button>
                     <input type="text" id="browser-url" placeholder="https://" spellcheck="false">
                     <button type="button" title="Go" onclick="browserGo()" style="width:auto; padding:0 12px; font-weight:600;">Go</button>
-                    <button type="button" title="Open in research window" onclick="openResearchWindow()" style="width:auto; padding:0 12px; font-size:0.78rem; font-weight:600;">Pop out</button>
                 </div>
                 <div class="browser-frame-wrap">
-                    <iframe id="survey-browser-frame" title="Research browser" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    <div id="browser-fallback" class="browser-fallback">
-                        <strong>This site blocks in-page embedding.</strong>
-                        <p>It is open in the Research Browser window so your screen recording can still capture it. Keep that window visible.</p>
-                        <button class="action-btn" type="button" onclick="openResearchWindow()">Focus research window</button>
+                    <div id="browser-loading" class="browser-fallback">
+                        <strong>Loading page…</strong>
+                        <p>Keeping everything inside this survey window for recording.</p>
                     </div>
+                    <iframe
+                        id="survey-browser-frame"
+                        title="Research browser"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads"
+                    ></iframe>
                 </div>
             </div>
 
@@ -1015,7 +1017,6 @@
     <p class="footer-note">Search Study · Academic information-search research</p>
 </div>
 
-<script src="https://js.puter.com/v2/"></script>
 <script>
     const APPS_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 
@@ -1030,13 +1031,6 @@
         'Ad 8': 'ads/ad8.mp4'
     };
 
-    // Sites that typically refuse iframe embedding
-    const FRAME_BLOCKED_HOSTS = [
-        'google.com', 'www.google.com', 'google.co.in',
-        'amazon.in', 'www.amazon.in', 'amazon.com', 'www.amazon.com',
-        'flipkart.com', 'www.flipkart.com'
-    ];
-
     let recorder = null;
     let chunks = [];
     let stream = null;
@@ -1046,8 +1040,8 @@
     let chatMessages = [];
     let officialClicks = [];
     let browsedUrls = [];
-    let researchWindow = null;
     let currentBrowserUrl = '';
+    let embedHistory = [];
     let chatBusy = false;
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1061,6 +1055,10 @@
         });
         document.getElementById('browser-url').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') browserGo();
+        });
+        const frame = document.getElementById('survey-browser-frame');
+        frame.addEventListener('load', () => {
+            document.getElementById('browser-loading').classList.remove('show');
         });
     });
 
@@ -1128,6 +1126,9 @@
         document.getElementById('survey-progress').style.width = `${(stepNumber / 6) * 100}%`;
         document.getElementById('step-label').textContent = `Step ${stepNumber} of 6`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (stepNumber === 5 && !currentBrowserUrl) {
+            navigateSurveyBrowser('https://www.google.com/webhp?igu=1');
+        }
     }
 
     async function startSurvey() {
@@ -1161,7 +1162,7 @@
             goToStep(2);
         } catch (err) {
             console.error(err);
-            alert('This study requires screen recording. Please share your Entire Screen (recommended) so Google/Amazon/Flipkart windows are captured too.');
+            alert('This study requires screen recording permission. Please allow screen share and try again.');
         }
     }
 
@@ -1215,15 +1216,6 @@
         if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
-    function hostOf(url) {
-        try { return new URL(url).hostname; } catch (e) { return ''; }
-    }
-
-    function isFrameBlocked(url) {
-        const host = hostOf(url).replace(/^www\./, '');
-        return FRAME_BLOCKED_HOSTS.some((h) => h.replace(/^www\./, '') === host || host.endsWith('.' + h.replace(/^www\./, '')));
-    }
-
     function normalizeUrl(raw) {
         let url = (raw || '').trim();
         if (!url) return '';
@@ -1231,37 +1223,55 @@
         return url;
     }
 
-    function navigateSurveyBrowser(url, { popOut = null } = {}) {
-        url = normalizeUrl(url);
-        if (!url) return;
-
-        currentBrowserUrl = url;
-        browsedUrls.push(url);
-        document.getElementById('browser-url').value = url;
-
-        const frame = document.getElementById('survey-browser-frame');
-        const fallback = document.getElementById('browser-fallback');
-        const shouldPop = popOut === null ? isFrameBlocked(url) : popOut;
-
-        frame.src = url;
-        fallback.classList.toggle('show', shouldPop);
-
-        if (shouldPop) {
-            openResearchWindow(url);
-        }
-
-        document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    function hostOf(url) {
+        try { return new URL(url).hostname.toLowerCase(); } catch (e) { return ''; }
     }
 
-    function openResearchWindow(url) {
-        const target = normalizeUrl(url || currentBrowserUrl || document.getElementById('browser-url').value);
-        if (!target) return;
-        researchWindow = window.open(target, 'searchStudyBrowser');
-        if (researchWindow) {
-            try { researchWindow.focus(); } catch (e) {}
-        } else {
-            alert('Please allow pop-ups for this site so the research browser can open. Your screen recording needs that window.');
+    // Convert target URLs into versions that can stay inside our iframe
+    function toEmbedUrl(rawUrl) {
+        const url = normalizeUrl(rawUrl);
+        if (!url) return '';
+
+        let parsed;
+        try { parsed = new URL(url); } catch (e) { return url; }
+
+        const host = parsed.hostname.replace(/^www\./, '');
+
+        // Google allows embedding when igu=1 is set
+        if (host === 'google.com' || host.endsWith('.google.com') || host === 'google.co.in' || host.endsWith('.google.co.in')) {
+            parsed.searchParams.set('igu', '1');
+            return parsed.toString();
         }
+
+        // Amazon / Flipkart block direct iframes — load via Google Translate view (same-page iframe)
+        if (
+            host === 'amazon.in' || host.endsWith('.amazon.in') ||
+            host === 'amazon.com' || host.endsWith('.amazon.com') ||
+            host === 'flipkart.com' || host.endsWith('.flipkart.com')
+        ) {
+            return 'https://translate.google.com/translate?hl=en&sl=auto&tl=en&u=' + encodeURIComponent(parsed.toString());
+        }
+
+        return parsed.toString();
+    }
+
+    function navigateSurveyBrowser(url) {
+        const realUrl = normalizeUrl(url);
+        if (!realUrl) return;
+
+        const embedUrl = toEmbedUrl(realUrl);
+        currentBrowserUrl = realUrl;
+        browsedUrls.push(realUrl);
+        embedHistory.push(embedUrl);
+        document.getElementById('browser-url').value = realUrl;
+
+        const loading = document.getElementById('browser-loading');
+        loading.classList.add('show');
+
+        const frame = document.getElementById('survey-browser-frame');
+        frame.src = embedUrl;
+
+        document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function browserGo() {
@@ -1269,21 +1279,22 @@
     }
 
     function browserBack() {
+        if (embedHistory.length > 1) {
+            embedHistory.pop();
+            const prev = embedHistory[embedHistory.length - 1];
+            document.getElementById('browser-loading').classList.add('show');
+            document.getElementById('survey-browser-frame').src = prev;
+            return;
+        }
         try {
             document.getElementById('survey-browser-frame').contentWindow.history.back();
-        } catch (e) {
-            if (researchWindow && !researchWindow.closed) {
-                try { researchWindow.history.back(); } catch (err) {}
-            }
-        }
+        } catch (e) {}
     }
 
     function browserReload() {
         const frame = document.getElementById('survey-browser-frame');
+        document.getElementById('browser-loading').classList.add('show');
         frame.src = frame.src;
-        if (researchWindow && !researchWindow.closed && currentBrowserUrl) {
-            researchWindow.location.href = currentBrowserUrl;
-        }
     }
 
     function executeGoogleSearch() {
@@ -1293,8 +1304,7 @@
             return;
         }
         googleSearches.push(query);
-        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        navigateSurveyBrowser(url, { popOut: true });
+        navigateSurveyBrowser(`https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1`);
     }
 
     function openShop(kind) {
@@ -1308,12 +1318,12 @@
         const url = map[kind];
         if (!url) return;
         officialClicks.push(url);
-        navigateSurveyBrowser(url, { popOut: true });
+        navigateSurveyBrowser(url);
     }
 
     function openOfficialLink(url, label) {
         officialClicks.push(label || url);
-        navigateSurveyBrowser(url, { popOut: isFrameBlocked(url) });
+        navigateSurveyBrowser(url);
     }
 
     async function sendChatMessage() {
@@ -1332,18 +1342,37 @@
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-            if (typeof puter === 'undefined' || !puter.ai) {
-                throw new Error('AI library not loaded');
-            }
-            const prompt = `You are helping a shopper research a product from an advertisement labeled "${selectedAdName || 'the selected product'}". Be concise and practical.\n\nUser question: ${query}`;
-            const response = await puter.ai.chat(prompt);
-            const text = typeof response === 'string'
-                ? response
-                : (response?.message?.content || response?.toString?.() || JSON.stringify(response));
+            const system = `You are a helpful shopping research assistant. The participant is studying an advertisement labeled "${selectedAdName || 'the selected product'}". Give concise, practical answers. No login or account talk.`;
+            const prompt = `${system}\n\nUser: ${query}`;
+
+            // Pollinations free text API — no login / no API key
+            const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt) + '?model=openai&personality=helpful');
+            if (!res.ok) throw new Error('AI HTTP ' + res.status);
+            const text = (await res.text()).trim();
+            if (!text) throw new Error('Empty AI response');
             document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> ${escapeHtml(text)}`;
         } catch (err) {
             console.error(err);
-            document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> Sorry — the free AI service is unavailable right now. Try Google, Amazon.in, or Flipkart in the research browser.`;
+            // Fallback secondary free endpoint
+            try {
+                const res2 = await fetch('https://text.pollinations.ai/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [
+                            { role: 'system', content: `Help with product research for "${selectedAdName || 'the product'}". Be concise.` },
+                            { role: 'user', content: query }
+                        ],
+                        model: 'openai',
+                        private: true
+                    })
+                });
+                const text2 = (await res2.text()).trim();
+                if (!res2.ok || !text2) throw new Error('fallback failed');
+                document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> ${escapeHtml(text2)}`;
+            } catch (err2) {
+                document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> Sorry — the free AI is briefly unavailable. Please try Google, Amazon.in, or Flipkart in the browser below.`;
+            }
         } finally {
             chatBusy = false;
             chatBox.scrollTop = chatBox.scrollHeight;
