@@ -271,13 +271,16 @@
     }
 
     .ad-btn::after {
-        content: "Watch";
+        content: none;
+    }
+
+    .ad-btn small {
         display: block;
         margin-top: 8px;
         font-family: var(--font-body);
         font-size: 0.72rem;
         font-weight: 600;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
         color: var(--muted);
     }
@@ -819,16 +822,16 @@
         <div id="step-2" class="step">
             <h2>Pick one advertisement</h2>
             <p class="intro-text">Choose any ad to watch. You’ll answer a few questions right after.</p>
-            <div class="ad-grid">
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8</button>
-            </div>
+        <div class="ad-grid">
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1<small>Laptop · High message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2<small>Laptop · Low message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3<small>Footwear · High message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4<small>Footwear · Low message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5<small>Courses · High message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6<small>Courses · Low message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7<small>Delivery · High message</small></button>
+            <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8<small>Delivery · Low message</small></button>
+        </div>
         </div>
 
         <!-- STEP 3 -->

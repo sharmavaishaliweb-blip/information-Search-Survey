@@ -1,14 +1,14 @@
 # Ad video files
 
-Place the 8 advertisement videos here using these exact names:
+Mapped from Desktop/Videos:
 
-- `ad1.mp4` → Ad 1
-- `ad2.mp4` → Ad 2
-- `ad3.mp4` → Ad 3
-- `ad4.mp4` → Ad 4
-- `ad5.mp4` → Ad 5
-- `ad6.mp4` → Ad 6
-- `ad7.mp4` → Ad 7
-- `ad8.mp4` → Ad 8
-
-`.webm` also works if you update the paths in `index.html` → `AD_VIDEOS`.
+| File        | Source                                      |
+|-------------|---------------------------------------------|
+| `ad1.mp4`   | 1. High message (laptop)                    |
+| `ad2.mp4`   | 2. Low message (laptop)                     |
+| `ad3.mp4`   | 3. high message (footwear)                  |
+| `ad4.mp4`   | 4. Low message (footwear)                   |
+| `ad5.mp4`   | 5. High Message (online educational courses)|
+| `ad6.mp4`   | 6. Low message (Online educational courses) |
+| `ad7.mp4`   | High (online delivery service)              |
+| `ad8.mp4`   | 8. Low (online delivery service)            |
