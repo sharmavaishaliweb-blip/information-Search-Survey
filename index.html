@@ -899,8 +899,9 @@
             </div>
 
             <div class="info-box">
-                Gather information before deciding. Everything stays <strong>inside this page</strong> so your screen recording captures it —
-                Google Search, the free AI chatbot (no login), Amazon.in, and Flipkart.
+                Gather information before deciding. Everything stays <strong>inside this page</strong> for recording —
+                Google Search, free AI chat (no login), Amazon.in, and Flipkart.
+                Shopping sites load in-page (they block normal embeds, so we proxy/reader-view them here).
             </div>
 
             <div class="search-container">
@@ -1227,52 +1228,171 @@
         try { return new URL(url).hostname.toLowerCase(); } catch (e) { return ''; }
     }
 
-    // Convert target URLs into versions that can stay inside our iframe
-    function toEmbedUrl(rawUrl) {
-        const url = normalizeUrl(rawUrl);
-        if (!url) return '';
+    function isGoogleHost(host) {
+        const h = host.replace(/^www\./, '');
+        return h === 'google.com' || h.endsWith('.google.com') || h === 'google.co.in' || h.endsWith('.google.co.in');
+    }
 
-        let parsed;
-        try { parsed = new URL(url); } catch (e) { return url; }
+    function isShoppingHost(host) {
+        const h = host.replace(/^www\./, '');
+        return (
+            h === 'amazon.in' || h.endsWith('.amazon.in') ||
+            h === 'amazon.com' || h.endsWith('.amazon.com') ||
+            h === 'flipkart.com' || h.endsWith('.flipkart.com')
+        );
+    }
 
-        const host = parsed.hostname.replace(/^www\./, '');
-
-        // Google allows embedding when igu=1 is set
-        if (host === 'google.com' || host.endsWith('.google.com') || host === 'google.co.in' || host.endsWith('.google.co.in')) {
-            parsed.searchParams.set('igu', '1');
-            return parsed.toString();
-        }
-
-        // Amazon / Flipkart block direct iframes — load via Google Translate view (same-page iframe)
-        if (
-            host === 'amazon.in' || host.endsWith('.amazon.in') ||
-            host === 'amazon.com' || host.endsWith('.amazon.com') ||
-            host === 'flipkart.com' || host.endsWith('.flipkart.com')
-        ) {
-            return 'https://translate.google.com/translate?hl=en&sl=auto&tl=en&u=' + encodeURIComponent(parsed.toString());
-        }
-
+    function withGoogleEmbed(url) {
+        const parsed = new URL(normalizeUrl(url));
+        parsed.searchParams.set('igu', '1');
         return parsed.toString();
+    }
+
+    function setFrameLoading(on) {
+        document.getElementById('browser-loading').classList.toggle('show', !!on);
+    }
+
+    function buildShopReaderDoc(url, markdown) {
+        const safeMd = escapeHtml(markdown)
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>');
+        const host = hostOf(url);
+        return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:#f6f7f9;color:#111}
+  .bar{position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;gap:10px;align-items:center}
+  .bar strong{font-size:14px}
+  .bar span{color:#6b7280;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  main{max-width:900px;margin:0 auto;padding:20px;background:#fff;min-height:100vh;line-height:1.55;font-size:15px}
+  a{color:#0f766e}
+</style></head><body>
+<div class="bar"><strong>${escapeHtml(host)}</strong><span>${escapeHtml(url)}</span></div>
+<main><p>${safeMd}</p></main>
+</body></html>`;
+    }
+
+    async function loadShoppingInPage(url) {
+        const frame = document.getElementById('survey-browser-frame');
+        setFrameLoading(true);
+
+        // 1) Try fetching through a CORS proxy and inject as srcdoc (stays in-page, no translate.goog)
+        const proxyFetchUrls = [
+            `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+        ];
+
+        for (const proxyUrl of proxyFetchUrls) {
+            try {
+                const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+                if (!res.ok) continue;
+                let html = await res.text();
+                if (!html || html.length < 200) continue;
+
+                // Prefer full documents; otherwise wrap fragment
+                const looksHtml = /<html|<body|<!doctype/i.test(html);
+                if (!looksHtml) {
+                    html = `<!DOCTYPE html><html><head><base href="${url}"></head><body>${html}</body></html>`;
+                } else {
+                    if (!/<base\s/i.test(html)) {
+                        html = html.replace(/<head([^>]*)>/i, `<head$1><base href="${url}">`);
+                    }
+                }
+
+                html = html
+                    .replace(/target\s*=\s*["'](_blank|_top|_parent)["']/gi, 'target="_self"')
+                    .replace(/<head([^>]*)>/i, `<head$1><script>
+                      try { Object.defineProperty(window, 'top', { get: function(){ return window; } }); } catch(e) {}
+                      try { Object.defineProperty(window, 'parent', { get: function(){ return window; } }); } catch(e) {}
+                      document.addEventListener('click', function(ev) {
+                        var a = ev.target && ev.target.closest && ev.target.closest('a[href]');
+                        if (!a) return;
+                        var href = a.getAttribute('href');
+                        if (!href || href.charAt(0) === '#') return;
+                        ev.preventDefault();
+                        try {
+                          var abs = new URL(href, ${JSON.stringify(url)}).toString();
+                          window.parent.postMessage({ type: 'survey-navigate', url: abs }, '*');
+                        } catch (err) {}
+                      }, true);
+                    </script>`);
+
+                frame.removeAttribute('src');
+                frame.srcdoc = html;
+                embedHistory.push('srcdoc:' + url);
+                setFrameLoading(false);
+                return;
+            } catch (err) {
+                console.warn('proxy fetch failed', proxyUrl, err);
+            }
+        }
+
+        // 2) Reader-mode fallback (always same-page): Jina AI page reader
+        try {
+            const res = await fetch(`https://r.jina.ai/${url}`, { signal: AbortSignal.timeout(15000) });
+            if (res.ok) {
+                const md = await res.text();
+                if (md && md.trim()) {
+                    frame.removeAttribute('src');
+                    frame.srcdoc = buildShopReaderDoc(url, md);
+                    embedHistory.push('reader:' + url);
+                    setFrameLoading(false);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.warn('reader fallback failed', err);
+        }
+
+        // 3) Last resort: Google site: search (embeddable with igu=1)
+        const parsed = new URL(url);
+        const q = parsed.searchParams.get('k') || parsed.searchParams.get('q') || selectedAdName || parsed.hostname;
+        const googleUrl = withGoogleEmbed(`https://www.google.com/search?q=${encodeURIComponent('site:' + parsed.hostname + ' ' + q)}`);
+        frame.removeAttribute('srcdoc');
+        frame.src = googleUrl;
+        embedHistory.push(googleUrl);
+        setFrameLoading(false);
     }
 
     function navigateSurveyBrowser(url) {
         const realUrl = normalizeUrl(url);
         if (!realUrl) return;
 
-        const embedUrl = toEmbedUrl(realUrl);
         currentBrowserUrl = realUrl;
         browsedUrls.push(realUrl);
-        embedHistory.push(embedUrl);
         document.getElementById('browser-url').value = realUrl;
-
-        const loading = document.getElementById('browser-loading');
-        loading.classList.add('show');
-
-        const frame = document.getElementById('survey-browser-frame');
-        frame.src = embedUrl;
-
         document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        const host = hostOf(realUrl);
+
+        if (isGoogleHost(host)) {
+            const embedUrl = withGoogleEmbed(realUrl);
+            embedHistory.push(embedUrl);
+            setFrameLoading(true);
+            const frame = document.getElementById('survey-browser-frame');
+            frame.removeAttribute('srcdoc');
+            frame.src = embedUrl;
+            return;
+        }
+
+        if (isShoppingHost(host)) {
+            loadShoppingInPage(realUrl);
+            return;
+        }
+
+        // Generic sites: try direct iframe
+        embedHistory.push(realUrl);
+        setFrameLoading(true);
+        const frame = document.getElementById('survey-browser-frame');
+        frame.removeAttribute('srcdoc');
+        frame.src = realUrl;
     }
+
+    // Allow proxied pages to request in-page navigation without opening new tabs
+    window.addEventListener('message', (event) => {
+        if (!event.data || event.data.type !== 'survey-navigate' || !event.data.url) return;
+        navigateSurveyBrowser(event.data.url);
+    });
 
     function browserGo() {
         navigateSurveyBrowser(document.getElementById('browser-url').value);
@@ -1282,8 +1402,15 @@
         if (embedHistory.length > 1) {
             embedHistory.pop();
             const prev = embedHistory[embedHistory.length - 1];
-            document.getElementById('browser-loading').classList.add('show');
-            document.getElementById('survey-browser-frame').src = prev;
+            if (String(prev).startsWith('srcdoc:') || String(prev).startsWith('reader:')) {
+                const original = String(prev).split(':').slice(1).join(':');
+                navigateSurveyBrowser(original);
+                return;
+            }
+            setFrameLoading(true);
+            const frame = document.getElementById('survey-browser-frame');
+            frame.removeAttribute('srcdoc');
+            frame.src = prev;
             return;
         }
         try {
@@ -1292,9 +1419,7 @@
     }
 
     function browserReload() {
-        const frame = document.getElementById('survey-browser-frame');
-        document.getElementById('browser-loading').classList.add('show');
-        frame.src = frame.src;
+        if (currentBrowserUrl) navigateSurveyBrowser(currentBrowserUrl);
     }
 
     function executeGoogleSearch() {
