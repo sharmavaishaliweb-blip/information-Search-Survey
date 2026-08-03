@@ -1144,11 +1144,31 @@
             return;
         }
 
+        if (!window.isSecureContext) {
+            alert('Screen recording needs a secure page (https:// or localhost). Open the GitHub Pages link or local preview, not a downloaded file.');
+            return;
+        }
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            alert('This browser does not support screen recording. Please use Chrome, Edge, or Firefox.');
+            return;
+        }
+
         try {
-            stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+            // Must be called directly from the button click
+            stream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+                audio: false
+            });
+
             chunks = [];
             finalVideoBlob = null;
-            recorder = new MediaRecorder(stream);
+
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+                ? 'video/webm;codecs=vp9'
+                : (MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : '');
+
+            recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
 
             recorder.ondataavailable = (e) => {
                 if (e.data && e.data.size > 0) chunks.push(e.data);
@@ -1162,8 +1182,15 @@
             document.getElementById('recording-indicator').style.display = 'flex';
             goToStep(2);
         } catch (err) {
-            console.error(err);
-            alert('This study requires screen recording permission. Please allow screen share and try again.');
+            console.error('getDisplayMedia failed:', err);
+            const msg = String(err && err.name ? err.name : err);
+            if (msg.includes('NotAllowedError') || msg.includes('PermissionDeniedError')) {
+                alert('Screen share was blocked or dismissed. Click the button again and choose “Entire Screen” or this browser window.');
+            } else if (msg.includes('NotFoundError') || msg.includes('NotReadableError')) {
+                alert('No screen was available to share. Please try again.');
+            } else {
+                alert('Could not start screen recording (' + msg + '). Use Chrome/Edge/Firefox on the https site and try again.');
+            }
         }
     }
 
@@ -1299,23 +1326,27 @@
                     }
                 }
 
+                const bridgeScript = [
+                    '<scr' + 'ipt>',
+                    'try { Object.defineProperty(window, "top", { get: function(){ return window; } }); } catch(e) {}',
+                    'try { Object.defineProperty(window, "parent", { get: function(){ return window; } }); } catch(e) {}',
+                    'document.addEventListener("click", function(ev) {',
+                    '  var a = ev.target && ev.target.closest && ev.target.closest("a[href]");',
+                    '  if (!a) return;',
+                    '  var href = a.getAttribute("href");',
+                    '  if (!href || href.charAt(0) === "#") return;',
+                    '  ev.preventDefault();',
+                    '  try {',
+                    '    var abs = new URL(href, ' + JSON.stringify(url) + ').toString();',
+                    '    window.parent.postMessage({ type: "survey-navigate", url: abs }, "*");',
+                    '  } catch (err) {}',
+                    '}, true);',
+                    '</scr' + 'ipt>'
+                ].join('\n');
+
                 html = html
                     .replace(/target\s*=\s*["'](_blank|_top|_parent)["']/gi, 'target="_self"')
-                    .replace(/<head([^>]*)>/i, `<head$1><script>
-                      try { Object.defineProperty(window, 'top', { get: function(){ return window; } }); } catch(e) {}
-                      try { Object.defineProperty(window, 'parent', { get: function(){ return window; } }); } catch(e) {}
-                      document.addEventListener('click', function(ev) {
-                        var a = ev.target && ev.target.closest && ev.target.closest('a[href]');
-                        if (!a) return;
-                        var href = a.getAttribute('href');
-                        if (!href || href.charAt(0) === '#') return;
-                        ev.preventDefault();
-                        try {
-                          var abs = new URL(href, ${JSON.stringify(url)}).toString();
-                          window.parent.postMessage({ type: 'survey-navigate', url: abs }, '*');
-                        } catch (err) {}
-                      }, true);
-                    </script>`);
+                    .replace(/<head([^>]*)>/i, '<head$1>' + bridgeScript);
 
                 frame.removeAttribute('src');
                 frame.srcdoc = html;
