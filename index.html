@@ -428,10 +428,12 @@
         display: flex;
         background: rgba(15, 118, 110, 0.06);
         border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
     }
 
     .tab-btn {
         flex: 1;
+        min-width: 120px;
         padding: 14px 10px;
         border: none;
         background: none;
@@ -450,12 +452,159 @@
     }
 
     .tab-content {
-        padding: 22px;
-        min-height: 260px;
+        padding: 18px 18px 8px;
         display: none;
     }
 
     .tab-content.active { display: block; animation: stepIn 0.35s ease; }
+
+    .shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .shop-btn {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px 14px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 700;
+        color: var(--ink);
+        transition: transform 0.15s ease, border-color 0.15s ease;
+        text-align: left;
+    }
+
+    .shop-btn small {
+        display: block;
+        margin-top: 6px;
+        font-weight: 500;
+        color: var(--muted);
+        font-size: 0.78rem;
+    }
+
+    .shop-btn:hover {
+        transform: translateY(-2px);
+        border-color: var(--teal);
+    }
+
+    .link-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .link-list button {
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 12px;
+        padding: 14px 16px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        color: var(--teal-deep);
+    }
+
+    .link-list button:hover { border-color: var(--teal); background: #f0fdfa; }
+
+    .browser-shell {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        background: #101816;
+        box-shadow: var(--shadow-soft);
+    }
+
+    .browser-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: linear-gradient(180deg, #1c2c27, #15221e);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .browser-toolbar button {
+        border: none;
+        background: rgba(255,255,255,0.08);
+        color: #d7e6e0;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .browser-toolbar button:hover { background: rgba(255,255,255,0.14); }
+
+    #browser-url {
+        flex: 1;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.28);
+        color: #e8f2ee;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.88rem;
+        font-family: inherit;
+    }
+
+    .browser-frame-wrap {
+        position: relative;
+        height: min(62vh, 640px);
+        background: #0b1411;
+    }
+
+    #survey-browser-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #fff;
+    }
+
+    .browser-fallback {
+        display: none;
+        position: absolute;
+        inset: 0;
+        padding: 28px;
+        background: rgba(8, 16, 14, 0.92);
+        color: #d7e6e0;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .browser-fallback.show { display: flex; }
+
+    .browser-fallback p {
+        margin: 0;
+        max-width: 36ch;
+        line-height: 1.5;
+        color: #b7cfc6;
+    }
+
+    #chat-box {
+        border: 1px solid var(--line);
+        height: 220px;
+        overflow-y: auto;
+        padding: 14px;
+        margin-bottom: 12px;
+        background: #fff;
+        font-size: 0.92rem;
+        border-radius: 12px;
+    }
+
+    .chat-row { margin: 0 0 10px; }
+    .chat-row.ai { color: var(--teal-deep); }
 
     .button-container {
         display: flex;
@@ -747,43 +896,81 @@
             </div>
 
             <div class="info-box">
-                Imagine you plan to buy this product/service. Use Google Search, the AI chatbot, or official links to gather information before you decide.
+                Gather information before deciding. Use real Google Search, the free AI chatbot, Amazon.in, Flipkart, or official links.
+                Pages open in the research browser below (and a dedicated browser window when a site blocks embedding) so your screen recording can capture them.
+                Prefer sharing your <strong>entire screen</strong> while recording.
             </div>
 
             <div class="search-container">
                 <div class="search-tabs">
                     <button class="tab-btn active" type="button" onclick="switchSearchTab(event, 'tab-google')">Google Search</button>
                     <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-chatbot')">AI Chatbot</button>
+                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-shop')">Amazon / Flipkart</button>
                     <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-official')">Official Links</button>
                 </div>
 
                 <div id="tab-google" class="tab-content active">
-                    <div style="display:flex; margin-bottom:15px; gap:0;">
-                        <input type="text" id="google-input" placeholder="Search product specs..." style="border-radius:12px 0 0 12px;">
-                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeMockSearch()">Search</button>
-                    </div>
-                    <div id="google-results" style="color: var(--muted); font-size: 0.92rem; line-height: 1.55;">
-                        Enter a query to run a simulated Google search.
+                    <div style="display:flex; gap:0;">
+                        <input type="text" id="google-input" placeholder="Search Google for this product..." style="border-radius:12px 0 0 12px;">
+                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeGoogleSearch()">Search Google</button>
                     </div>
                 </div>
 
                 <div id="tab-chatbot" class="tab-content">
-                    <div id="chat-box" style="border:1px solid var(--line); height:160px; overflow-y:auto; padding:12px; margin-bottom:12px; background:#fff; font-size:0.92rem; border-radius:12px;">
-                        <p style="color:var(--muted); margin:0;"><strong>AI Chatbot:</strong> Hello! Ask me anything about the product in the advertisement.</p>
+                    <div id="chat-box">
+                        <p class="chat-row ai" style="margin:0;"><strong>AI:</strong> Hi! I’m a free research assistant. Ask me anything about the product in the ad.</p>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="chat-input" placeholder="Ask AI a question..." style="flex:1;">
+                        <input type="text" id="chat-input" placeholder="Ask the AI a question..." style="flex:1;">
                         <button class="action-btn" type="button" style="padding:12px 18px;" onclick="sendChatMessage()">Send</button>
                     </div>
                 </div>
 
+                <div id="tab-shop" class="tab-content">
+                    <div class="shop-grid">
+                        <button class="shop-btn" type="button" onclick="openShop('amazon')">
+                            Amazon.in
+                            <small>Open Amazon India in the research browser</small>
+                        </button>
+                        <button class="shop-btn" type="button" onclick="openShop('flipkart')">
+                            Flipkart
+                            <small>Open Flipkart in the research browser</small>
+                        </button>
+                        <button class="shop-btn" type="button" onclick="openShop('amazon-search')">
+                            Search on Amazon
+                            <small>Search the selected ad on Amazon.in</small>
+                        </button>
+                        <button class="shop-btn" type="button" onclick="openShop('flipkart-search')">
+                            Search on Flipkart
+                            <small>Search the selected ad on Flipkart</small>
+                        </button>
+                    </div>
+                </div>
+
                 <div id="tab-official" class="tab-content">
-                    <h4 style="margin-top:0; color:var(--ink); font-family:var(--font-display);">Official vendor directory</h4>
-                    <ul style="padding-left: 20px; line-height: 2; margin:0;">
-                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Technical Specifications Manual'); return false;">Technical Specifications Manual</a></li>
-                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Regional Pricing & Subscription Plans'); return false;">Regional Pricing &amp; Subscription Plans</a></li>
-                        <li><a href="#" style="color: var(--teal-deep); font-weight:600;" onclick="trackOfficialClick('Implementation FAQs & Setup Guides'); return false;">Implementation FAQs &amp; Setup Guides</a></li>
+                    <ul class="link-list">
+                        <li><button type="button" onclick="openOfficialLink('https://www.amazon.in', 'Amazon.in homepage')">Amazon.in — homepage</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.flipkart.com', 'Flipkart homepage')">Flipkart.com — homepage</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=product+specifications+reviews', 'Specs & reviews search')">Google — specs &amp; reviews</button></li>
                     </ul>
+                </div>
+            </div>
+
+            <div class="browser-shell" id="browser-panel">
+                <div class="browser-toolbar">
+                    <button type="button" title="Back" onclick="browserBack()">←</button>
+                    <button type="button" title="Reload" onclick="browserReload()">↻</button>
+                    <input type="text" id="browser-url" placeholder="https://" spellcheck="false">
+                    <button type="button" title="Go" onclick="browserGo()" style="width:auto; padding:0 12px; font-weight:600;">Go</button>
+                    <button type="button" title="Open in research window" onclick="openResearchWindow()" style="width:auto; padding:0 12px; font-size:0.78rem; font-weight:600;">Pop out</button>
+                </div>
+                <div class="browser-frame-wrap">
+                    <iframe id="survey-browser-frame" title="Research browser" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div id="browser-fallback" class="browser-fallback">
+                        <strong>This site blocks in-page embedding.</strong>
+                        <p>It is open in the Research Browser window so your screen recording can still capture it. Keep that window visible.</p>
+                        <button class="action-btn" type="button" onclick="openResearchWindow()">Focus research window</button>
+                    </div>
                 </div>
             </div>
 
@@ -825,6 +1012,7 @@
     <p class="footer-note">Search Study · Academic information-search research</p>
 </div>
 
+<script src="https://js.puter.com/v2/"></script>
 <script>
     const APPS_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 
@@ -839,6 +1027,13 @@
         'Ad 8': 'ads/ad8.mp4'
     };
 
+    // Sites that typically refuse iframe embedding
+    const FRAME_BLOCKED_HOSTS = [
+        'google.com', 'www.google.com', 'google.co.in',
+        'amazon.in', 'www.amazon.in', 'amazon.com', 'www.amazon.com',
+        'flipkart.com', 'www.flipkart.com'
+    ];
+
     let recorder = null;
     let chunks = [];
     let stream = null;
@@ -847,6 +1042,10 @@
     let googleSearches = [];
     let chatMessages = [];
     let officialClicks = [];
+    let browsedUrls = [];
+    let researchWindow = null;
+    let currentBrowserUrl = '';
+    let chatBusy = false;
 
     document.addEventListener('DOMContentLoaded', () => {
         buildLikertScales();
@@ -855,7 +1054,10 @@
             if (e.key === 'Enter') sendChatMessage();
         });
         document.getElementById('google-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') executeMockSearch();
+            if (e.key === 'Enter') executeGoogleSearch();
+        });
+        document.getElementById('browser-url').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') browserGo();
         });
     });
 
@@ -956,7 +1158,7 @@
             goToStep(2);
         } catch (err) {
             console.error(err);
-            alert('This study requires screen recording permission. Please allow screen share and try again.');
+            alert('This study requires screen recording. Please share your Entire Screen (recommended) so Google/Amazon/Flipkart windows are captured too.');
         }
     }
 
@@ -1010,58 +1212,139 @@
         if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
-    function executeMockSearch() {
-        const query = document.getElementById('google-input').value.trim();
-        const resultsBox = document.getElementById('google-results');
-        if (!query) {
-            resultsBox.textContent = 'Please enter a search string.';
-            return;
-        }
-
-        googleSearches.push(query);
-        const ad = escapeHtml(selectedAdName || 'Product');
-        const q = escapeHtml(query);
-        resultsBox.innerHTML = `
-            <div style="margin-bottom: 16px;">
-                <div style="color:var(--muted); font-size:0.8rem; margin-bottom:10px;">Simulated results for “${q}”</div>
-                <div style="color:#0f766e; font-weight:700; font-size:1.05rem; text-decoration:underline; cursor:pointer;">
-                    Official docs & reviews: ${ad}
-                </div>
-                <div style="color:#15803d; font-size:0.8rem; margin:2px 0;">www.official-vendor.com/product-specs</div>
-                <div style="color:var(--ink-soft);">Verified specifications and documentation for ${ad}.</div>
-            </div>
-            <div>
-                <div style="color:#0f766e; font-weight:700; font-size:1.05rem; text-decoration:underline; cursor:pointer;">
-                    Is ${ad} worth it?
-                </div>
-                <div style="color:#15803d; font-size:0.8rem; margin:2px 0;">www.techreviewportal.com/articles</div>
-                <div style="color:var(--ink-soft);">In-depth critique related to “${q}”.</div>
-            </div>
-        `;
+    function hostOf(url) {
+        try { return new URL(url).hostname; } catch (e) { return ''; }
     }
 
-    function sendChatMessage() {
+    function isFrameBlocked(url) {
+        const host = hostOf(url).replace(/^www\./, '');
+        return FRAME_BLOCKED_HOSTS.some((h) => h.replace(/^www\./, '') === host || host.endsWith('.' + h.replace(/^www\./, '')));
+    }
+
+    function normalizeUrl(raw) {
+        let url = (raw || '').trim();
+        if (!url) return '';
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        return url;
+    }
+
+    function navigateSurveyBrowser(url, { popOut = null } = {}) {
+        url = normalizeUrl(url);
+        if (!url) return;
+
+        currentBrowserUrl = url;
+        browsedUrls.push(url);
+        document.getElementById('browser-url').value = url;
+
+        const frame = document.getElementById('survey-browser-frame');
+        const fallback = document.getElementById('browser-fallback');
+        const shouldPop = popOut === null ? isFrameBlocked(url) : popOut;
+
+        frame.src = url;
+        fallback.classList.toggle('show', shouldPop);
+
+        if (shouldPop) {
+            openResearchWindow(url);
+        }
+
+        document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function openResearchWindow(url) {
+        const target = normalizeUrl(url || currentBrowserUrl || document.getElementById('browser-url').value);
+        if (!target) return;
+        researchWindow = window.open(target, 'searchStudyBrowser');
+        if (researchWindow) {
+            try { researchWindow.focus(); } catch (e) {}
+        } else {
+            alert('Please allow pop-ups for this site so the research browser can open. Your screen recording needs that window.');
+        }
+    }
+
+    function browserGo() {
+        navigateSurveyBrowser(document.getElementById('browser-url').value);
+    }
+
+    function browserBack() {
+        try {
+            document.getElementById('survey-browser-frame').contentWindow.history.back();
+        } catch (e) {
+            if (researchWindow && !researchWindow.closed) {
+                try { researchWindow.history.back(); } catch (err) {}
+            }
+        }
+    }
+
+    function browserReload() {
+        const frame = document.getElementById('survey-browser-frame');
+        frame.src = frame.src;
+        if (researchWindow && !researchWindow.closed && currentBrowserUrl) {
+            researchWindow.location.href = currentBrowserUrl;
+        }
+    }
+
+    function executeGoogleSearch() {
+        const query = document.getElementById('google-input').value.trim();
+        if (!query) {
+            alert('Enter something to search on Google.');
+            return;
+        }
+        googleSearches.push(query);
+        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        navigateSurveyBrowser(url, { popOut: true });
+    }
+
+    function openShop(kind) {
+        const q = selectedAdName || 'product';
+        const map = {
+            amazon: 'https://www.amazon.in/',
+            flipkart: 'https://www.flipkart.com/',
+            'amazon-search': `https://www.amazon.in/s?k=${encodeURIComponent(q)}`,
+            'flipkart-search': `https://www.flipkart.com/search?q=${encodeURIComponent(q)}`
+        };
+        const url = map[kind];
+        if (!url) return;
+        officialClicks.push(url);
+        navigateSurveyBrowser(url, { popOut: true });
+    }
+
+    function openOfficialLink(url, label) {
+        officialClicks.push(label || url);
+        navigateSurveyBrowser(url, { popOut: isFrameBlocked(url) });
+    }
+
+    async function sendChatMessage() {
         const chatInput = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
         const query = chatInput.value.trim();
-        if (!query) return;
+        if (!query || chatBusy) return;
 
         chatMessages.push(query);
-        chatBox.innerHTML += `<p style="margin:4px 0;"><strong>You:</strong> ${escapeHtml(query)}</p>`;
-
-        setTimeout(() => {
-            const reply = `Regarding "${escapeHtml(query)}", ${escapeHtml(selectedAdName || 'the product')} uses a modern architecture. Ask if you want specs.`;
-            chatBox.innerHTML += `<p style="margin:4px 0; color:var(--teal-deep);"><strong>AI Chatbot:</strong> ${reply}</p>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }, 700);
-
+        chatBox.innerHTML += `<p class="chat-row"><strong>You:</strong> ${escapeHtml(query)}</p>`;
         chatInput.value = '';
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+        chatBusy = true;
 
-    function trackOfficialClick(label) {
-        officialClicks.push(label);
-        alert(`Opened mock page: ${label}`);
+        const thinkingId = `think-${Date.now()}`;
+        chatBox.innerHTML += `<p class="chat-row ai" id="${thinkingId}"><strong>AI:</strong> Thinking…</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            if (typeof puter === 'undefined' || !puter.ai) {
+                throw new Error('AI library not loaded');
+            }
+            const prompt = `You are helping a shopper research a product from an advertisement labeled "${selectedAdName || 'the selected product'}". Be concise and practical.\n\nUser question: ${query}`;
+            const response = await puter.ai.chat(prompt);
+            const text = typeof response === 'string'
+                ? response
+                : (response?.message?.content || response?.toString?.() || JSON.stringify(response));
+            document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> ${escapeHtml(text)}`;
+        } catch (err) {
+            console.error(err);
+            document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> Sorry — the free AI service is unavailable right now. Try Google, Amazon.in, or Flipkart in the research browser.`;
+        } finally {
+            chatBusy = false;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     }
 
     function collectAnswers() {
@@ -1088,7 +1371,8 @@
             pi_q10: getRadioValue('pi_q10'),
             googleSearches,
             chatMessages,
-            officialClicks
+            officialClicks,
+            browsedUrls
         };
     }
 

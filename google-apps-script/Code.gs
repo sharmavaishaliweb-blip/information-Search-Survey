@@ -45,6 +45,7 @@ var HEADERS = [
   'Google Searches',
   'Chat Messages',
   'Official Links Clicked',
+  'Browsed URLs',
   'Drive Video URL',
   'Drive File ID'
 ];
@@ -129,6 +130,7 @@ function doPost(e) {
       (answers.googleSearches || []).join(' | '),
       (answers.chatMessages || []).join(' | '),
       (answers.officialClicks || []).join(' | '),
+      (answers.browsedUrls || []).join(' | '),
       driveUrl,
       driveFileId
     ];
