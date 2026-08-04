@@ -915,6 +915,8 @@
 
             <div class="info-box">
                 Now imagine that you're thinking about buying this product/service. Before deciding you can explore more information using the search interfaces provided. Use whichever option you prefer — Google search, the AI chatbot, the official website links, or a combination of these — just as you would in real life. No time restriction. Once you have gathered sufficient information and ready to make your decision, click continue to proceed to the last few questions.
+                <br><br>
+                Your screen is being recorded on this search page only.
             </div>
 
             <h3 class="section-label">SEARCH PAGE</h3>
@@ -1141,7 +1143,7 @@
         }
     }
 
-    async function startSurvey() {
+    function startSurvey() {
         const name = document.getElementById('fullname').value.trim();
         const age = document.getElementById('age').value;
         const gender = document.getElementById('gender').value;
@@ -1153,18 +1155,24 @@
             return;
         }
 
+        goToStep(2);
+    }
+
+    async function startSearchRecording() {
+        // Already recording
+        if (recorder && recorder.state === 'recording') return true;
+
         if (!window.isSecureContext) {
             alert('Screen recording needs a secure page (https:// or localhost). Open the GitHub Pages link or local preview, not a downloaded file.');
-            return;
+            return false;
         }
 
         if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
             alert('This browser does not support screen recording. Please use Chrome, Edge, or Firefox.');
-            return;
+            return false;
         }
 
         try {
-            // Must be called directly from the button click
             stream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
                 audio: false
@@ -1189,17 +1197,18 @@
 
             recorder.start(1000);
             document.getElementById('recording-indicator').style.display = 'flex';
-            goToStep(2);
+            return true;
         } catch (err) {
             console.error('getDisplayMedia failed:', err);
             const msg = String(err && err.name ? err.name : err);
             if (msg.includes('NotAllowedError') || msg.includes('PermissionDeniedError')) {
-                alert('Screen share was blocked or dismissed. Click the button again and choose “Entire Screen” or this browser window.');
+                alert('Screen share is required on the search page. Click Continue again and choose “Entire Screen” or this browser window.');
             } else if (msg.includes('NotFoundError') || msg.includes('NotReadableError')) {
                 alert('No screen was available to share. Please try again.');
             } else {
                 alert('Could not start screen recording (' + msg + '). Use Chrome/Edge/Firefox on the https site and try again.');
             }
+            return false;
         }
     }
 
@@ -1281,8 +1290,13 @@
         goToStep(5);
     }
 
-    function continueFromSemantic() {
+    async function continueFromSemantic() {
         if (!requireRadios(['sem_1','sem_2','sem_3','sem_4','sem_5'], 'Please complete all scales for question 6.')) return;
+
+        // Screen recording starts only when entering the search page
+        const ok = await startSearchRecording();
+        if (!ok) return;
+
         goToStep(6);
     }
 
