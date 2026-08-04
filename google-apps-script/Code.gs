@@ -44,8 +44,11 @@ var HEADERS = [
   'PI Q10 Probability High',
   'Google Searches',
   'Chat Messages',
+  'Site Clicks',
   'Official Links Clicked',
   'Browsed URLs',
+  'Search Metrics Summary',
+  'Search Metrics JSON',
   'Drive Video URL',
   'Drive File ID'
 ];
@@ -127,10 +130,15 @@ function doPost(e) {
       answers.pi_q8 || '',
       answers.pi_q9 || '',
       answers.pi_q10 || '',
-      (answers.googleSearches || []).join(' | '),
-      (answers.chatMessages || []).join(' | '),
-      (answers.officialClicks || []).join(' | '),
-      (answers.browsedUrls || []).join(' | '),
+      stringifyList_(answers.googleSearches),
+      stringifyList_(answers.chatMessages),
+      stringifyList_(answers.siteClicks),
+      stringifyList_(answers.officialClicks),
+      stringifyList_(answers.browsedUrls),
+      answers.searchMetrics && answers.searchMetrics.summary
+        ? JSON.stringify(answers.searchMetrics.summary)
+        : '',
+      answers.searchMetrics ? JSON.stringify(answers.searchMetrics) : '',
       driveUrl,
       driveFileId
     ];
@@ -157,4 +165,18 @@ function jsonResponse_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function stringifyList_(value) {
+  if (!value) return '';
+  if (Object.prototype.toString.call(value) !== '[object Array]') {
+    return String(value);
+  }
+  return value.map(function (item) {
+    if (item == null) return '';
+    if (typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean') {
+      return String(item);
+    }
+    return JSON.stringify(item);
+  }).join(' | ');
 }

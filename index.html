@@ -425,45 +425,34 @@
         overflow: hidden;
         margin-top: 18px;
         background: rgba(255,255,255,0.72);
+        padding: 20px 18px 16px;
     }
 
-    .search-tabs {
-        display: flex;
-        background: rgba(15, 118, 110, 0.06);
-        border-bottom: 1px solid var(--line);
-        flex-wrap: wrap;
-    }
-
-    .tab-btn {
-        flex: 1;
-        min-width: 120px;
-        padding: 14px 10px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: 600;
+    .scenario-prompt {
+        font-size: 0.95rem;
         color: var(--muted);
-        font-size: 0.9rem;
-        transition: color 0.15s ease, background 0.15s ease;
+        margin: 0 0 10px;
+        font-weight: 600;
     }
 
-    .tab-btn.active {
-        background: #fff;
-        color: var(--teal-deep);
-        box-shadow: inset 0 -3px 0 var(--teal);
+    .scenario-text {
+        font-size: 1.02rem;
+        line-height: 1.65;
+        color: var(--ink);
+        margin: 0 0 18px;
+        white-space: pre-wrap;
     }
 
-    .tab-content {
-        padding: 18px 18px 8px;
-        display: none;
+    .search-boxes-label {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0 0 14px;
     }
-
-    .tab-content.active { display: block; animation: stepIn 0.35s ease; }
 
     .shop-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 12px;
         margin-bottom: 8px;
     }
@@ -478,44 +467,68 @@
         font-weight: 700;
         color: var(--ink);
         transition: transform 0.15s ease, border-color 0.15s ease;
-        text-align: left;
-    }
-
-    .shop-btn small {
-        display: block;
-        margin-top: 6px;
-        font-weight: 500;
-        color: var(--muted);
-        font-size: 0.78rem;
+        text-align: center;
+        font-size: 0.95rem;
     }
 
     .shop-btn:hover {
         transform: translateY(-2px);
         border-color: var(--teal);
-    }
-
-    .link-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: grid;
-        gap: 10px;
-    }
-
-    .link-list button {
-        width: 100%;
-        text-align: left;
-        border: 1px solid var(--line);
-        background: #fff;
-        border-radius: 12px;
-        padding: 14px 16px;
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: 600;
+        background: #f0fdfa;
         color: var(--teal-deep);
     }
 
-    .link-list button:hover { border-color: var(--teal); background: #f0fdfa; }
+    .shop-btn.used {
+        border-color: var(--teal);
+        box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.25);
+    }
+
+    .google-search-block {
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+    }
+
+    .google-search-row {
+        display: flex;
+        gap: 0;
+        align-items: stretch;
+    }
+
+    .google-search-row #google-input {
+        flex: 1;
+        border-radius: 12px 0 0 12px;
+        margin: 0;
+    }
+
+    .google-search-row .action-btn {
+        border-radius: 0 12px 12px 0;
+        white-space: nowrap;
+    }
+
+    .ai-search-block {
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+    }
+
+    .ai-response {
+        max-height: 220px;
+        overflow-y: auto;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #f7fffd;
+        margin: 0 0 10px;
+        line-height: 1.5;
+    }
+
+    .metrics-note {
+        margin-top: 14px;
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.45;
+    }
 
     .browser-shell {
         margin-top: 14px;
@@ -723,7 +736,6 @@
         .scale-anchor, .semantic-left, .semantic-right, .scale-options { width: 100%; }
         .semantic-left, .semantic-right { text-align: center; padding: 0; }
         .step-hero h2 { max-width: none; }
-        .search-tabs { flex-direction: column; }
     }
 </style>
 </head>
@@ -816,14 +828,14 @@
         <!-- STEP 2: Ad selection (PDF) -->
         <div id="step-2" class="step">
             <div class="ad-grid">
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6</button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1<small>Laptop</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3<small>Footwear</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5<small>Courses</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7<small>Delivery</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2<small>Laptop</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4<small>Footwear</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6<small>Courses</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8<small>Delivery</small></button>
             </div>
             <p class="intro-text">(select any one advertisement to continue)</p>
         </div>
@@ -904,7 +916,7 @@
             </div>
         </div>
 
-        <!-- STEP 6: Search page (PDF) -->
+        <!-- STEP 6: Search situation (category sites) -->
         <div id="step-6" class="step">
             <p class="intro-text" style="text-align:left; margin-bottom:12px;">
                 You have now viewed the advertisement
@@ -914,65 +926,41 @@
             </div>
 
             <div class="info-box">
-                Now imagine that you're thinking about buying this product/service. Before deciding you can explore more information using the search interfaces provided. Use whichever option you prefer — Google search, the AI chatbot, the official website links, or a combination of these — just as you would in real life. No time restriction. Once you have gathered sufficient information and ready to make your decision, click continue to proceed to the last few questions.
+                Please carefully read the situation below, then explore using the website buttons, Google search, and/or the AI chatbot — just as you would in everyday life. There is no time limit. When you have enough information and are ready to decide, click Continue for the last few questions.
                 <br><br>
-                Your screen is being recorded on this search page only.
+                Your screen is being recorded on this search page only. Recording stops when you click Continue. Search behaviour metrics are also logged automatically.
             </div>
 
             <h3 class="section-label">SEARCH PAGE</h3>
 
             <div class="search-container">
-                <div class="search-tabs">
-                    <button class="tab-btn active" type="button" onclick="switchSearchTab(event, 'tab-google')">Google Search</button>
-                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-chatbot')">AI Chatbot</button>
-                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-official')">Official Website Links</button>
-                </div>
+                <p class="scenario-prompt" id="scenario-prompt">Please carefully read the following introductory text.</p>
+                <p class="scenario-text" id="scenario-text"></p>
+                <p class="search-boxes-label">You can now click on Search boxes below 👇</p>
+                <div class="shop-grid" id="search-site-buttons"></div>
 
-                <div id="tab-google" class="tab-content active">
-                    <div style="display:flex; gap:0;">
-                        <input type="text" id="google-input" placeholder="Search Google..." style="border-radius:12px 0 0 12px;">
-                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeGoogleSearch()">Search</button>
+                <div class="google-search-block">
+                    <p class="search-boxes-label" style="margin-top:18px;">Google Search</p>
+                    <div class="google-search-row">
+                        <input type="text" id="google-input" placeholder="Search Google..." autocomplete="off">
+                        <button class="action-btn" type="button" onclick="executeGoogleSearch()">Search</button>
                     </div>
                 </div>
 
-                <div id="tab-chatbot" class="tab-content">
+                <div class="ai-search-block">
+                    <p class="search-boxes-label">Conversational AI</p>
                     <div id="chat-box">
                         <p class="chat-row ai" style="margin:0;"><strong>AI Chatbot:</strong> Ask me any questions about the product/service in the advertisement.</p>
                     </div>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="chat-input" placeholder="Ask a question..." style="flex:1;">
-                        <button class="action-btn" type="button" style="padding:12px 18px;" onclick="sendChatMessage()">Send</button>
+                    <div class="google-search-row" style="margin-top:10px;">
+                        <input type="text" id="chat-input" placeholder="Ask a question..." autocomplete="off">
+                        <button class="action-btn" type="button" onclick="sendChatMessage()">Send</button>
                     </div>
                 </div>
 
-                <div id="tab-official" class="tab-content">
-                    <ul class="link-list">
-                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+website+specifications', 'Official website / specs')">Official website / specifications</button></li>
-                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+pricing', 'Official pricing')">Official pricing information</button></li>
-                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+FAQ+support', 'Official FAQ / support')">Official FAQ / support</button></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="browser-shell" id="browser-panel">
-                <div class="browser-toolbar">
-                    <button type="button" title="Back" onclick="browserBack()">←</button>
-                    <button type="button" title="Reload" onclick="browserReload()">↻</button>
-                    <input type="text" id="browser-url" placeholder="https://" spellcheck="false">
-                    <button type="button" title="Go" onclick="browserGo()" style="width:auto; padding:0 12px; font-weight:600;">Go</button>
-                </div>
-                <div class="browser-frame-wrap">
-                    <div id="browser-loading" class="browser-fallback">
-                        <strong>Loading…</strong>
-                        <p>Page opens inside this survey window.</p>
-                    </div>
-                    <iframe
-                        id="survey-browser-frame"
-                        title="Search page"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads"
-                    ></iframe>
-                </div>
+                <p class="metrics-note">
+                    Note: Scroll depth on Google and shopping sites opened in new tabs cannot be read by the browser for privacy reasons; those CT values are left for coding from the screen recording. AI scroll and all selection/timing/query metrics are captured automatically.
+                </p>
             </div>
 
             <!-- Replay overlay for ad -->
@@ -984,7 +972,7 @@
             </div>
 
             <div class="button-container">
-                <button class="action-btn" type="button" onclick="goToStep(7)">Continue</button>
+                <button class="action-btn" type="button" onclick="continueFromSearch()">Continue</button>
             </div>
         </div>
 
@@ -1032,6 +1020,79 @@
         'Ad 8': 'ads/ad8.mp4'
     };
 
+    const LAPTOP_SITES = [
+        { name: 'flipkart', url: 'https://www.flipkart.com/' },
+        { name: 'Amazon', url: 'https://www.amazon.in/' },
+        { name: 'Myntra', url: 'https://www.myntra.com/' },
+        { name: 'Croma', url: 'https://www.croma.com/' },
+        { name: 'reliancedigital', url: 'https://www.reliancedigital.in/' }
+    ];
+    const FOOTWEAR_SITES = [
+        { name: 'flipkart', url: 'https://www.flipkart.com/' },
+        { name: 'Amazon', url: 'https://www.amazon.in/' },
+        { name: 'Myntra', url: 'https://www.myntra.com/' },
+        { name: 'ajio', url: 'https://www.ajio.com/' },
+        { name: 'Nykaa fashion', url: 'https://www.nykaafashion.com/' }
+    ];
+    const COURSES_SITES = [
+        { name: 'coursera', url: 'https://www.coursera.org/' },
+        { name: 'edX', url: 'https://www.edx.org/' },
+        { name: 'udemy', url: 'https://www.udemy.com/' },
+        { name: 'linkedin learning', url: 'https://www.linkedin.com/learning/' },
+        { name: 'swayam', url: 'https://swayam.gov.in/' }
+    ];
+    const DELIVERY_SITES = [
+        { name: 'blinkit', url: 'https://blinkit.com/' },
+        { name: 'Zomato', url: 'https://www.zomato.com/' },
+        { name: 'Zepto', url: 'https://www.zeptonow.com/' },
+        { name: 'Swiggy Instamart', url: 'https://www.swiggy.com/instamart' },
+        { name: 'bigbasket', url: 'https://www.bigbasket.com/' }
+    ];
+
+    // Situation texts + site sets from the live research Google Site (Ad 1–8).
+    const SEARCH_SITUATIONS = {
+        'Ad 1': {
+            prompt: 'Please carefully read the following introductory text.',
+            text: 'Your exams are very close, so you will need your own laptop for tests and project work. Since buying a laptop costs a lot of money, choose it carefully. Make sure it has MS Office, a 14–15-inch screen, at least 16 GB of RAM, and at least 4 hours of battery life, within the price range of 40,000-80,000. Read reviews, compare different brands, and select a laptop that is reliable and gives good value for your money.',
+            sites: LAPTOP_SITES
+        },
+        'Ad 2': {
+            prompt: 'Please read the following introductory text.',
+            text: 'Your exams and important assignments are coming soon, so you need a laptop for online tests and submitting projects. Borrowing one again and again is not convenient, so you have decided to buy your own. Since a laptop is a long-term purchase and not something you replace often, it is wise to invest in a good-quality one.',
+            sites: LAPTOP_SITES
+        },
+        'Ad 3': {
+            prompt: 'Please carefully read the following introductory text.',
+            text: 'You are planning for a mountain trip and for that you need shoes that are comfortable, stylish, and strong. Opt for lightweight pairs to ease long treks. Key features include waterproofing, ankle support, breathability, and sturdy grip. Since footwear is widely available and frequently purchased, you can easily compare options. Checking popular styles, discounts, and customer reviews can help you choose the right pair.',
+            sites: FOOTWEAR_SITES
+        },
+        'Ad 4': {
+            prompt: 'Please read the following introductory text.',
+            text: 'You are heading for a mountain trip with your friends, and you realize you need a comfortable pair of shoes. Luckily, many footwear brands are running big sales right now, and some shoes are even endorsed by travel influencers!\n\nSince shoes are easily available and not too expensive, you can quickly check out the latest deals and grab a pair before your trip.',
+            sites: FOOTWEAR_SITES
+        },
+        'Ad 5': {
+            prompt: 'Please carefully read the following introductory text.',
+            text: 'Your semester break is coming, and you are thinking about joining an online course to learn new skills for your future career options. In today’s competitive job market, courses in areas like business, finance, data analytics, or digital marketing can give you an advantage. Before choosing, compare course content, certification value, teachers, flexibility, and career benefits to select the best option for your goals.',
+            sites: COURSES_SITES
+        },
+        'Ad 6': {
+            prompt: 'Please read the following introductory text.',
+            text: 'Your semester break is coming soon. Instead of wasting time, you can join an online course. Many students choose online courses to improve their skills and add certificates to their resumes. There are many platforms offering useful courses. You can study at your own speed. It is a good way to learn something helpful for future jobs.',
+            sites: COURSES_SITES
+        },
+        'Ad 7': {
+            prompt: 'Please carefully read the following introductory text.',
+            text: 'You and your friends are sitting in college on a hot summer day and start craving something refreshing. As more friends join, you all decide to order chilled drinks. You choose options like fresh juices or lemon-based drinks because they are hydrating, light on the stomach, and contain less sugar, helping you feel refreshed for longer compared to heavy, sugary beverages.',
+            sites: DELIVERY_SITES
+        },
+        'Ad 8': {
+            prompt: 'Please read the following introductory text.',
+            text: 'You and your friends are sitting in college on a hot summer day and feel like having something cool. As more friends join, you all decide to order chilled drinks. You pick something simple and enjoyable, just to relax, chat, and refresh yourselves together.',
+            sites: DELIVERY_SITES
+        }
+    };
+
     const TOTAL_STEPS = 7;
     const LIKERT_LABELS = [
         'Strongly disagree',
@@ -1051,27 +1112,339 @@
     let googleSearches = [];
     let chatMessages = [];
     let officialClicks = [];
+    let siteClicks = [];
     let browsedUrls = [];
     let currentBrowserUrl = '';
     let embedHistory = [];
     let chatBusy = false;
+    let searchMetrics = null;
+    let searchTrackingActive = false;
+
+    const METRIC_STOPWORDS = new Set([
+        'a','an','the','and','or','but','if','then','to','for','of','in','on','at','by','with','from','into',
+        'is','are','was','were','be','been','being','do','does','did','can','could','should','would','will',
+        'i','me','my','we','our','you','your','it','its','this','that','these','those','as','about','than',
+        'please','help','find','show','want','need','looking','buy','buying','get','best'
+    ]);
+
+    function emptyChannelMetrics() {
+        return {
+            SN1_sourceSelectionCount: 0,
+            SN2_uniqueSourcesVisited: 0,
+            TE1_avgDwellMs: 0,
+            TE1_avgDwellSec: 0,
+            TE2_totalSearchDurationMs: 0,
+            TE2_totalSearchDurationSec: 0,
+            CT1_scrollFrequency: null,
+            CT2_avgMaxScrollDepthPct: null,
+            CT2_depthCategories: [],
+            QD1_reformulationFrequency: 0,
+            QD2_newInformationRequirements: 0,
+            dwellSessionsMs: [],
+            uniqueSources: [],
+            queries: [],
+            events: [],
+            captureNotes: []
+        };
+    }
+
+    function initSearchMetrics() {
+        searchMetrics = {
+            searchStartedAt: new Date().toISOString(),
+            searchEndedAt: null,
+            TE2_totalSearchDurationMs: 0,
+            TE2_totalSearchDurationSec: 0,
+            activeSource: null,
+            channels: {
+                google: emptyChannelMetrics(),
+                direct: emptyChannelMetrics(),
+                ai: emptyChannelMetrics()
+            },
+            rawEvents: [],
+            limitations: [
+                'CT1/CT2 for google and direct channels require screen-recording coding when sources open in external tabs (cross-origin).',
+                'CT1/CT2 for ai are captured automatically on AI response panels.',
+                'TE1 for google/direct uses time from source open until return to survey or next source switch.',
+                'QD2 uses automated new-term detection (stopword-filtered); researchers may override with manual coding.'
+            ]
+        };
+        searchMetrics.channels.google.captureNotes.push('External Google tab: SN/TE/QD auto; CT from recording.');
+        searchMetrics.channels.direct.captureNotes.push('External website tab: SN/TE auto; QD1 counts additional source selections after the first; CT from recording.');
+        searchMetrics.channels.ai.captureNotes.push('In-page AI: SN/TE/CT/QD auto.');
+        searchTrackingActive = true;
+    }
+
+    function nowMs() {
+        return Date.now();
+    }
+
+    function logRawEvent(type, channel, data) {
+        if (!searchMetrics) return;
+        const entry = {
+            type,
+            channel: channel || null,
+            at: new Date().toISOString(),
+            t: nowMs(),
+            ...(data || {})
+        };
+        searchMetrics.rawEvents.push(entry);
+        if (channel && searchMetrics.channels[channel]) {
+            searchMetrics.channels[channel].events.push(entry);
+        }
+    }
+
+    function scrollDepthCategory(pct) {
+        if (pct == null || Number.isNaN(pct)) return null;
+        if (pct <= 25) return 'Top only (0–25%)';
+        if (pct <= 50) return 'Quarter (26–50%)';
+        if (pct <= 75) return 'Three quarters (51–75%)';
+        if (pct < 100) return 'Near bottom (76–99%)';
+        return 'Bottom reached (100%)';
+    }
+
+    function closeActiveSource(reason) {
+        if (!searchMetrics || !searchMetrics.activeSource) return;
+        const active = searchMetrics.activeSource;
+        const endedAt = nowMs();
+        const dwell = Math.max(0, endedAt - active.startedAt);
+        active.endedAt = endedAt;
+        active.dwellMs = dwell;
+        active.closeReason = reason || 'switch';
+
+        const ch = searchMetrics.channels[active.channel];
+        if (ch) {
+            ch.dwellSessionsMs.push(dwell);
+            if (active.channel === 'ai') {
+                if (typeof active.scrollCount === 'number') {
+                    ch.CT1_scrollFrequency = (ch.CT1_scrollFrequency || 0) + active.scrollCount;
+                }
+                if (typeof active.maxScrollDepthPct === 'number') {
+                    if (!Array.isArray(ch._scrollDepths)) ch._scrollDepths = [];
+                    ch._scrollDepths.push(active.maxScrollDepthPct);
+                }
+            }
+        }
+
+        logRawEvent('source_close', active.channel, {
+            sourceId: active.sourceId,
+            dwellMs: dwell,
+            reason: active.closeReason,
+            scrollCount: active.scrollCount || 0,
+            maxScrollDepthPct: active.maxScrollDepthPct
+        });
+        searchMetrics.activeSource = null;
+    }
+
+    function openSource(channel, sourceId, meta) {
+        if (!searchMetrics) return;
+        closeActiveSource('switch');
+        const ch = searchMetrics.channels[channel];
+        ch.SN1_sourceSelectionCount += 1;
+        if (!ch.uniqueSources.includes(sourceId)) {
+            ch.uniqueSources.push(sourceId);
+            ch.SN2_uniqueSourcesVisited = ch.uniqueSources.length;
+        }
+
+        searchMetrics.activeSource = {
+            channel,
+            sourceId,
+            startedAt: nowMs(),
+            scrollCount: 0,
+            maxScrollDepthPct: channel === 'ai' ? 0 : null,
+            lastScrollTop: 0,
+            meta: meta || {}
+        };
+
+        logRawEvent('source_open', channel, { sourceId, ...(meta || {}) });
+    }
+
+    function tokenizeInfoNeeds(text) {
+        return String(text || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9\s+\-]/g, ' ')
+            .split(/\s+/)
+            .map((t) => t.trim())
+            .filter((t) => t.length > 2 && !METRIC_STOPWORDS.has(t));
+    }
+
+    function registerQuery(channel, text) {
+        if (!searchMetrics) return { qd1: 0, qd2: 0, isReformulation: false };
+        const ch = searchMetrics.channels[channel];
+        const terms = tokenizeInfoNeeds(text);
+        const priorTerms = new Set();
+        ch.queries.forEach((q) => (q.terms || []).forEach((t) => priorTerms.add(t)));
+
+        const isReformulation = ch.queries.length >= 1;
+        let newTerms = [];
+        if (isReformulation) {
+            newTerms = terms.filter((t) => !priorTerms.has(t));
+            ch.QD1_reformulationFrequency += 1;
+            ch.QD2_newInformationRequirements += newTerms.length;
+        }
+
+        ch.queries.push({
+            text,
+            at: new Date().toISOString(),
+            terms,
+            newTerms,
+            isReformulation
+        });
+
+        logRawEvent('query', channel, { text, newTerms, isReformulation });
+        return {
+            qd1: ch.QD1_reformulationFrequency,
+            qd2: ch.QD2_newInformationRequirements,
+            isReformulation,
+            newTerms
+        };
+    }
+
+    function attachAiScrollTracking(el, sourceId) {
+        if (!el) return;
+        el.addEventListener('scroll', () => {
+            if (!searchMetrics || !searchMetrics.activeSource) return;
+            const active = searchMetrics.activeSource;
+            if (active.channel !== 'ai' || active.sourceId !== sourceId) return;
+
+            const top = el.scrollTop;
+            if (Math.abs(top - (active.lastScrollTop || 0)) >= 20) {
+                active.lastScrollTop = top;
+                active.scrollCount = (active.scrollCount || 0) + 1;
+                logRawEvent('scroll', 'ai', { sourceId, scrollTop: top });
+            }
+
+            const scrollable = el.scrollHeight - el.clientHeight;
+            const depth = scrollable <= 0 ? 100 : Math.min(100, Math.round((top / scrollable) * 100));
+            active.maxScrollDepthPct = Math.max(active.maxScrollDepthPct || 0, depth);
+        }, { passive: true });
+
+        // Fully visible short answers count as bottom reached
+        requestAnimationFrame(() => {
+            if (!searchMetrics || !searchMetrics.activeSource) return;
+            const active = searchMetrics.activeSource;
+            if (active.sourceId !== sourceId) return;
+            if (el.scrollHeight <= el.clientHeight + 2) {
+                active.maxScrollDepthPct = 100;
+            }
+        });
+    }
+
+    function onSearchFocusReturn() {
+        if (!searchTrackingActive || !searchMetrics) return;
+        const active = searchMetrics.activeSource;
+        if (!active) return;
+        if (active.channel === 'google' || active.channel === 'direct') {
+            // Returning to survey ends the external-source examination segment
+            closeActiveSource('focus_return');
+        }
+    }
+
+    function finalizeSearchMetrics() {
+        if (!searchMetrics) return null;
+        closeActiveSource('search_end');
+
+        const endedAt = nowMs();
+        const startedAt = Date.parse(searchMetrics.searchStartedAt);
+        const totalMs = Math.max(0, endedAt - startedAt);
+        searchMetrics.searchEndedAt = new Date(endedAt).toISOString();
+        searchMetrics.TE2_totalSearchDurationMs = totalMs;
+        searchMetrics.TE2_totalSearchDurationSec = Math.round(totalMs / 1000);
+
+        ['google', 'direct', 'ai'].forEach((key) => {
+            const ch = searchMetrics.channels[key];
+            ch.TE2_totalSearchDurationMs = totalMs;
+            ch.TE2_totalSearchDurationSec = searchMetrics.TE2_totalSearchDurationSec;
+            ch.SN2_uniqueSourcesVisited = ch.uniqueSources.length;
+
+            if (ch.dwellSessionsMs.length) {
+                const sum = ch.dwellSessionsMs.reduce((a, b) => a + b, 0);
+                ch.TE1_avgDwellMs = Math.round(sum / ch.dwellSessionsMs.length);
+                ch.TE1_avgDwellSec = Math.round((ch.TE1_avgDwellMs / 1000) * 10) / 10;
+            } else {
+                ch.TE1_avgDwellMs = 0;
+                ch.TE1_avgDwellSec = 0;
+            }
+
+            if (key === 'ai') {
+                ch.CT1_scrollFrequency = ch.CT1_scrollFrequency || 0;
+                const depths = ch._scrollDepths || [];
+                if (depths.length) {
+                    ch.CT2_avgMaxScrollDepthPct = Math.round(
+                        depths.reduce((a, b) => a + b, 0) / depths.length
+                    );
+                    ch.CT2_depthCategories = depths.map(scrollDepthCategory);
+                } else {
+                    ch.CT2_avgMaxScrollDepthPct = 0;
+                    ch.CT2_depthCategories = [];
+                }
+            } else {
+                ch.CT1_scrollFrequency = null;
+                ch.CT2_avgMaxScrollDepthPct = null;
+                ch.CT2_depthCategories = [];
+            }
+
+            if (key === 'direct' && ch.SN1_sourceSelectionCount > 0) {
+                // Proxy: selections after the first count as iterative source/search actions
+                ch.QD1_reformulationFrequency = Math.max(0, ch.SN1_sourceSelectionCount - 1);
+            }
+        });
+
+        searchMetrics.summary = {
+            google: {
+                SN1: searchMetrics.channels.google.SN1_sourceSelectionCount,
+                SN2: searchMetrics.channels.google.SN2_uniqueSourcesVisited,
+                TE1_sec: searchMetrics.channels.google.TE1_avgDwellSec,
+                TE2_sec: searchMetrics.TE2_totalSearchDurationSec,
+                CT1: searchMetrics.channels.google.CT1_scrollFrequency,
+                CT2: searchMetrics.channels.google.CT2_avgMaxScrollDepthPct,
+                QD1: searchMetrics.channels.google.QD1_reformulationFrequency,
+                QD2: searchMetrics.channels.google.QD2_newInformationRequirements
+            },
+            direct: {
+                SN1: searchMetrics.channels.direct.SN1_sourceSelectionCount,
+                SN2: searchMetrics.channels.direct.SN2_uniqueSourcesVisited,
+                TE1_sec: searchMetrics.channels.direct.TE1_avgDwellSec,
+                TE2_sec: searchMetrics.TE2_totalSearchDurationSec,
+                CT1: searchMetrics.channels.direct.CT1_scrollFrequency,
+                CT2: searchMetrics.channels.direct.CT2_avgMaxScrollDepthPct,
+                QD1: searchMetrics.channels.direct.QD1_reformulationFrequency,
+                QD2: searchMetrics.channels.direct.QD2_newInformationRequirements
+            },
+            ai: {
+                SN1: searchMetrics.channels.ai.SN1_sourceSelectionCount,
+                SN2: searchMetrics.channels.ai.SN2_uniqueSourcesVisited,
+                TE1_sec: searchMetrics.channels.ai.TE1_avgDwellSec,
+                TE2_sec: searchMetrics.TE2_totalSearchDurationSec,
+                CT1: searchMetrics.channels.ai.CT1_scrollFrequency,
+                CT2: searchMetrics.channels.ai.CT2_avgMaxScrollDepthPct,
+                QD1: searchMetrics.channels.ai.QD1_reformulationFrequency,
+                QD2: searchMetrics.channels.ai.QD2_newInformationRequirements
+            }
+        };
+
+        searchTrackingActive = false;
+        return searchMetrics;
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
         buildLikertScales();
         buildSemanticScales();
-        document.getElementById('chat-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
+        const googleInput = document.getElementById('google-input');
+        if (googleInput) {
+            googleInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') executeGoogleSearch();
+            });
+        }
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput) {
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+        }
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') onSearchFocusReturn();
         });
-        document.getElementById('google-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') executeGoogleSearch();
-        });
-        document.getElementById('browser-url').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') browserGo();
-        });
-        const frame = document.getElementById('survey-browser-frame');
-        frame.addEventListener('load', () => {
-            document.getElementById('browser-loading').classList.remove('show');
-        });
+        window.addEventListener('focus', onSearchFocusReturn);
     });
 
     function escapeHtml(str) {
@@ -1138,9 +1511,42 @@
         document.getElementById('survey-progress').style.width = `${(stepNumber / TOTAL_STEPS) * 100}%`;
         document.getElementById('step-label').textContent = `Step ${stepNumber} of ${TOTAL_STEPS}`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (stepNumber === 6 && !currentBrowserUrl) {
-            navigateSurveyBrowser('https://www.google.com/webhp?igu=1');
-        }
+        if (stepNumber === 6) renderSearchSituation();
+    }
+
+    function renderSearchSituation() {
+        const situation = SEARCH_SITUATIONS[selectedAdName] || SEARCH_SITUATIONS['Ad 1'];
+        document.getElementById('scenario-prompt').textContent = situation.prompt;
+        document.getElementById('scenario-text').textContent = situation.text;
+
+        const grid = document.getElementById('search-site-buttons');
+        grid.innerHTML = situation.sites.map((site) => `
+            <button class="shop-btn" type="button"
+                data-site-name="${escapeHtml(site.name)}"
+                data-site-url="${escapeHtml(site.url)}"
+                onclick="openSearchSite(this)">
+                ${escapeHtml(site.name)}
+            </button>
+        `).join('');
+    }
+
+    function openSearchSite(btn) {
+        const name = btn.dataset.siteName || '';
+        const url = btn.dataset.siteUrl || '';
+        if (!url) return;
+        siteClicks.push({ name, url, at: new Date().toISOString() });
+        browsedUrls.push(url);
+        btn.classList.add('used');
+
+        const sourceId = name || hostOf(url) || url;
+        openSource('direct', sourceId, { url, name });
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    async function continueFromSearch() {
+        finalizeSearchMetrics();
+        await stopRecording();
+        goToStep(7);
     }
 
     function startSurvey() {
@@ -1297,6 +1703,7 @@
         const ok = await startSearchRecording();
         if (!ok) return;
 
+        initSearchMetrics();
         goToStep(6);
     }
 
@@ -1522,8 +1929,15 @@
             alert('Enter something to search on Google.');
             return;
         }
-        googleSearches.push(query);
-        navigateSurveyBrowser(`https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1`);
+        googleSearches.push({ query, at: new Date().toISOString() });
+        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        browsedUrls.push(url);
+
+        registerQuery('google', query);
+        // Treat each SERP request as a source selection; unique source = normalized query host+query key
+        const sourceId = 'google:' + query.toLowerCase();
+        openSource('google', sourceId, { query, url });
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     function openShop(kind) {
@@ -1551,28 +1965,34 @@
         const query = chatInput.value.trim();
         if (!query || chatBusy) return;
 
-        chatMessages.push(query);
+        chatMessages.push({ role: 'user', text: query, at: new Date().toISOString() });
+        registerQuery('ai', query);
+
         chatBox.innerHTML += `<p class="chat-row"><strong>You:</strong> ${escapeHtml(query)}</p>`;
         chatInput.value = '';
         chatBusy = true;
 
-        const thinkingId = `think-${Date.now()}`;
-        chatBox.innerHTML += `<p class="chat-row ai" id="${thinkingId}"><strong>AI:</strong> Thinking…</p>`;
+        const responseId = `ai-res-${Date.now()}`;
+        chatBox.innerHTML += `<div class="ai-response" id="${responseId}"><strong>AI:</strong> Thinking…</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
+
+        openSource('ai', responseId, { prompt: query });
+        const responseEl = document.getElementById(responseId);
+        attachAiScrollTracking(responseEl, responseId);
 
         try {
             const system = `You are a helpful shopping research assistant. The participant is studying an advertisement labeled "${selectedAdName || 'the selected product'}". Give concise, practical answers. No login or account talk.`;
             const prompt = `${system}\n\nUser: ${query}`;
 
-            // Pollinations free text API — no login / no API key
             const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt) + '?model=openai&personality=helpful');
             if (!res.ok) throw new Error('AI HTTP ' + res.status);
             const text = (await res.text()).trim();
             if (!text) throw new Error('Empty AI response');
-            document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> ${escapeHtml(text)}`;
+            responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(text)}`;
+            chatMessages.push({ role: 'ai', text, at: new Date().toISOString(), responseId });
+            logRawEvent('ai_response', 'ai', { responseId, chars: text.length });
         } catch (err) {
             console.error(err);
-            // Fallback secondary free endpoint
             try {
                 const res2 = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
@@ -1588,13 +2008,19 @@
                 });
                 const text2 = (await res2.text()).trim();
                 if (!res2.ok || !text2) throw new Error('fallback failed');
-                document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> ${escapeHtml(text2)}`;
+                responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(text2)}`;
+                chatMessages.push({ role: 'ai', text: text2, at: new Date().toISOString(), responseId });
+                logRawEvent('ai_response', 'ai', { responseId, chars: text2.length });
             } catch (err2) {
-                document.getElementById(thinkingId).innerHTML = `<strong>AI:</strong> Sorry — the free AI is briefly unavailable. Please try Google, Amazon.in, or Flipkart in the browser below.`;
+                responseEl.innerHTML = `<strong>AI:</strong> Sorry — the free AI is briefly unavailable. Please try Google or the website buttons above.`;
+                logRawEvent('ai_error', 'ai', { responseId });
             }
         } finally {
             chatBusy = false;
             chatBox.scrollTop = chatBox.scrollHeight;
+            if (responseEl && responseEl.scrollHeight <= responseEl.clientHeight + 2 && searchMetrics && searchMetrics.activeSource && searchMetrics.activeSource.sourceId === responseId) {
+                searchMetrics.activeSource.maxScrollDepthPct = 100;
+            }
         }
     }
 
@@ -1623,7 +2049,9 @@
             googleSearches,
             chatMessages,
             officialClicks,
-            browsedUrls
+            siteClicks,
+            browsedUrls,
+            searchMetrics
         };
     }
 
@@ -1663,13 +2091,24 @@
     }
 
     function downloadLocalBackup(blob) {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `survey-backup-${Date.now()}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
+        if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `survey-backup-${Date.now()}.webm`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        if (searchMetrics) {
+            const metricsBlob = new Blob([JSON.stringify(searchMetrics, null, 2)], { type: 'application/json' });
+            const mUrl = URL.createObjectURL(metricsBlob);
+            const mA = document.createElement('a');
+            mA.href = mUrl;
+            mA.download = `survey-metrics-${Date.now()}.json`;
+            mA.click();
+            URL.revokeObjectURL(mUrl);
+        }
     }
 
     function setStatus(type, message) {
@@ -1683,9 +2122,10 @@
 
         const submitBtn = document.getElementById('submit-btn');
         submitBtn.disabled = true;
-        setStatus('info', 'Stopping recording and preparing your submission...');
+        setStatus('info', 'Preparing your submission...');
 
         try {
+            // Recording should already have stopped after search; stop again safely if needed.
             const videoBlob = await stopRecording();
             downloadLocalBackup(videoBlob);
 
@@ -1698,7 +2138,7 @@
 
             if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE_YOUR_')) {
                 setStatus('ok', 'Survey captured locally. Sheets/Drive will activate once Apps Script is configured.');
-                alert('Survey complete. A local video backup downloaded. Google Sheets/Drive is not connected yet.');
+                alert('Survey complete. Local video + metrics JSON backups downloaded. Google Sheets/Drive is not connected yet.');
                 submitBtn.disabled = false;
                 return;
             }
