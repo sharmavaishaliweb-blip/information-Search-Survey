@@ -101,7 +101,7 @@
 
     .progress-bar {
         height: 100%;
-        width: 16.67%;
+        width: 14.28%;
         background: linear-gradient(90deg, var(--teal), #14b8a6);
         transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -738,8 +738,8 @@
 
 <div class="shell">
     <div class="brand-row">
-        <div class="brand-mark">Search <span>Study</span></div>
-        <div class="step-chip" id="step-label">Step 1 of 6</div>
+        <div class="brand-mark">Online Information <span>Search Survey</span></div>
+        <div class="step-chip" id="step-label">Step 1 of 7</div>
     </div>
 
     <div id="recording-indicator">
@@ -748,39 +748,34 @@
 
     <div class="panel">
 
-        <!-- STEP 1 -->
-        <div id="step-1" class="step active step-hero">
-            <div class="hero-kicker">Academic research survey</div>
-            <h2>How do you search before you buy?</h2>
-            <p class="lede">
-                A short guided study on ads, curiosity, and the paths people take to decide.
-                Your screen is recorded so researchers can learn from real behaviour.
-            </p>
-
+        <!-- STEP 1: Demographics (PDF) -->
+        <div id="step-1" class="step active">
+            <h2>Online Information Search Survey</h2>
             <div class="info-box">
-                Takes about 10–15 minutes. Please complete every section in one sitting.
+                All responses will remain anonymous and will be used solely for academic research purposes.
             </div>
+            <p class="intro-text">Please fill in details to begin.</p>
 
             <div class="form-group">
                 <label for="fullname">1. Full Name</label>
-                <input type="text" id="fullname" placeholder="Enter your full name" autocomplete="name">
+                <input type="text" id="fullname" autocomplete="name">
             </div>
 
             <div class="form-group">
                 <label for="age">2. Age</label>
                 <select id="age">
-                    <option value="">Select age range</option>
-                    <option value="18-20">18 – 20</option>
-                    <option value="21-24">21 – 24</option>
-                    <option value="25-29">25 – 29</option>
-                    <option value="30-34">30 – 34</option>
+                    <option value="">--Select--</option>
+                    <option value="18-20">18-20</option>
+                    <option value="21-24">21-24</option>
+                    <option value="25-29">25-29</option>
+                    <option value="30-34">30-34</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="gender">3. Gender</label>
                 <select id="gender">
-                    <option value="">Select gender</option>
+                    <option value="">--Select--</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
@@ -790,11 +785,11 @@
             <div class="form-group">
                 <label for="education">4. Educational Level</label>
                 <select id="education">
-                    <option value="">Select education level</option>
+                    <option value="">--Select--</option>
                     <option value="Higher Secondary">Higher Secondary (10+2)</option>
                     <option value="Diploma">Diploma</option>
-                    <option value="Undergraduate">Undergraduate (Bachelor's Degree)</option>
-                    <option value="Postgraduate">Postgraduate (Master's Degree)</option>
+                    <option value="Undergraduate">Undergraduate (Bachelor's degree)</option>
+                    <option value="Postgraduate">Postgraduate (Master's degree)</option>
                     <option value="Other">Other</option>
                 </select>
             </div>
@@ -802,52 +797,77 @@
             <div class="form-group">
                 <label for="frequency">5. How often do you purchase products or services online?</label>
                 <select id="frequency">
-                    <option value="">Select frequency</option>
+                    <option value="">--Select--</option>
                     <option value="Never">Never</option>
                     <option value="Less than once a month">Less than once a month</option>
                     <option value="Once a month">Once a month</option>
-                    <option value="2-3 times per month">2 – 3 times per month</option>
-                    <option value="4-6 times per month">4 – 6 times per month</option>
-                    <option value="7-10 times per month">7 – 10 times per month</option>
+                    <option value="2-3 times per month">2-3 times per month</option>
+                    <option value="4-6 times per month">4-6 times per month</option>
+                    <option value="7-10 times per month">7-10 times per month</option>
                     <option value="Very Frequently">Very Frequently (More than 10 times per month)</option>
                 </select>
             </div>
 
             <div class="button-container">
-                <button class="action-btn" type="button" onclick="startSurvey()">Start &amp; allow screen share</button>
+                <button class="action-btn" type="button" onclick="startSurvey()">Proceed to Videos</button>
             </div>
         </div>
 
-        <!-- STEP 2 -->
+        <!-- STEP 2: Ad selection (PDF) -->
         <div id="step-2" class="step">
-            <h2>Pick one advertisement</h2>
-            <p class="intro-text">Choose any ad to watch. You’ll answer a few questions right after.</p>
-        <div class="ad-grid">
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1<small>Laptop · High message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2<small>Laptop · Low message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3<small>Footwear · High message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4<small>Footwear · Low message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5<small>Courses · High message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6<small>Courses · Low message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7<small>Delivery · High message</small></button>
-            <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8<small>Delivery · Low message</small></button>
-        </div>
+            <div class="ad-grid">
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6</button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8</button>
+            </div>
+            <p class="intro-text">(select any one advertisement to continue)</p>
         </div>
 
-        <!-- STEP 3 -->
+        <!-- STEP 3: Ad + Q4 & Q5 only -->
         <div id="step-3" class="step">
-            <h2 id="current-ad-title">Ad Playback</h2>
+            <h2 id="current-ad-title">Ad. shown</h2>
 
             <div class="ad-viewport">
                 <video id="ad-video" controls playsinline>
                     Your browser does not support video playback.
                 </video>
                 <span id="ad-viewport-text" style="display:none; padding: 24px; text-align:center;">
-                    Video file not found yet. Place the ad file in the <code>ads/</code> folder.
+                    Video file not found.
                 </span>
             </div>
 
-            <h3 class="section-label">Ad feedback</h3>
+            <div class="button-container" style="margin-top:16px; margin-bottom:8px;">
+                <button class="action-btn rose" type="button" onclick="replayAd()">Replay Ad</button>
+            </div>
+
+            <h3 class="section-label">AD FEEDBACK:</h3>
+
+            <div class="question-block">
+                <div class="question-text">4. The advertisement provided facts about the product/service.</div>
+                <div class="scale-row" data-scale="fb_q4"></div>
+            </div>
+            <div class="question-block">
+                <div class="question-text">5. The advertisement provided practical information about the product/service.</div>
+                <div class="scale-row" data-scale="fb_q5"></div>
+            </div>
+
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="continueFromAdInfo()">Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: Q1, Q2, Q3 -->
+        <div id="step-4" class="step">
+            <h3 class="section-label">AD FEEDBACK:</h3>
+
+            <div class="button-container" style="margin-top:0; margin-bottom:20px;">
+                <button class="action-btn rose" type="button" onclick="replayAd()">Replay Ad</button>
+            </div>
 
             <div class="question-block">
                 <div class="question-text">1. I am familiar with this product/service.</div>
@@ -861,24 +881,17 @@
                 <div class="question-text">3. Compared with most people, I know more about this product/service.</div>
                 <div class="scale-row" data-scale="fb_q3"></div>
             </div>
-            <div class="question-block">
-                <div class="question-text">4. The advertisement provided facts about the product/service.</div>
-                <div class="scale-row" data-scale="fb_q4"></div>
-            </div>
-            <div class="question-block">
-                <div class="question-text">5. The advertisement provided practical information about the product/service.</div>
-                <div class="scale-row" data-scale="fb_q5"></div>
-            </div>
 
             <div class="button-container">
-                <button class="action-btn" type="button" onclick="continueFromFeedback()">Continue</button>
+                <button class="action-btn" type="button" onclick="continueFromFamiliarity()">Continue</button>
             </div>
         </div>
 
-        <!-- STEP 4 -->
-        <div id="step-4" class="step">
-            <h2>Product category perceptions</h2>
-            <p class="intro-text">6. Think about this type of product/service in general. Pick the point that fits your view.</p>
+        <!-- STEP 5: Q6 semantic (PDF) -->
+        <div id="step-5" class="step">
+            <p class="intro-text" style="text-align:left;">
+                6. Please think about this type of product/service in general. Indicate how you would describe it by selecting the point that best represents your opinion.
+            </p>
 
             <div class="semantic-row" data-scale="sem_1" data-left="Unimportant" data-right="Important"></div>
             <div class="semantic-row" data-scale="sem_2" data-left="Irrelevant" data-right="Relevant"></div>
@@ -887,74 +900,54 @@
             <div class="semantic-row" data-scale="sem_5" data-left="Not needed" data-right="Needed"></div>
 
             <div class="button-container">
-                <button class="action-btn" type="button" onclick="continueFromSemantic()">Go to research task</button>
+                <button class="action-btn" type="button" onclick="continueFromSemantic()">Continue</button>
             </div>
         </div>
 
-        <!-- STEP 5 -->
-        <div id="step-5" class="step">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:8px;">
-                <h2 style="text-align:left; margin:0;">Information search</h2>
-                <button class="action-btn rose" type="button" style="padding:10px 16px; font-size:0.85rem;" onclick="rewatchAd()">Rewatch ad</button>
+        <!-- STEP 6: Search page (PDF) -->
+        <div id="step-6" class="step">
+            <p class="intro-text" style="text-align:left; margin-bottom:12px;">
+                You have now viewed the advertisement
+            </p>
+            <div class="button-container" style="margin-top:0; margin-bottom:20px; justify-content:flex-start;">
+                <button class="action-btn rose" type="button" onclick="replayAd()">Rewatch again</button>
             </div>
 
             <div class="info-box">
-                Gather information before deciding. Everything stays <strong>inside this page</strong> for recording —
-                Google Search, free AI chat (no login), Amazon.in, and Flipkart.
-                Shopping sites load in-page (they block normal embeds, so we proxy/reader-view them here).
+                Now imagine that you're thinking about buying this product/service. Before deciding you can explore more information using the search interfaces provided. Use whichever option you prefer — Google search, the AI chatbot, the official website links, or a combination of these — just as you would in real life. No time restriction. Once you have gathered sufficient information and ready to make your decision, click continue to proceed to the last few questions.
             </div>
+
+            <h3 class="section-label">SEARCH PAGE</h3>
 
             <div class="search-container">
                 <div class="search-tabs">
                     <button class="tab-btn active" type="button" onclick="switchSearchTab(event, 'tab-google')">Google Search</button>
                     <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-chatbot')">AI Chatbot</button>
-                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-shop')">Amazon / Flipkart</button>
-                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-official')">Official Links</button>
+                    <button class="tab-btn" type="button" onclick="switchSearchTab(event, 'tab-official')">Official Website Links</button>
                 </div>
 
                 <div id="tab-google" class="tab-content active">
                     <div style="display:flex; gap:0;">
-                        <input type="text" id="google-input" placeholder="Search Google for this product..." style="border-radius:12px 0 0 12px;">
-                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeGoogleSearch()">Search Google</button>
+                        <input type="text" id="google-input" placeholder="Search Google..." style="border-radius:12px 0 0 12px;">
+                        <button class="action-btn" type="button" style="border-radius:0 12px 12px 0;" onclick="executeGoogleSearch()">Search</button>
                     </div>
                 </div>
 
                 <div id="tab-chatbot" class="tab-content">
                     <div id="chat-box">
-                        <p class="chat-row ai" style="margin:0;"><strong>AI:</strong> Hi! I’m a free research assistant — no login needed. Ask me anything about the product in the ad.</p>
+                        <p class="chat-row ai" style="margin:0;"><strong>AI Chatbot:</strong> Ask me any questions about the product/service in the advertisement.</p>
                     </div>
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="chat-input" placeholder="Ask the AI a question..." style="flex:1;">
+                        <input type="text" id="chat-input" placeholder="Ask a question..." style="flex:1;">
                         <button class="action-btn" type="button" style="padding:12px 18px;" onclick="sendChatMessage()">Send</button>
-                    </div>
-                </div>
-
-                <div id="tab-shop" class="tab-content">
-                    <div class="shop-grid">
-                        <button class="shop-btn" type="button" onclick="openShop('amazon')">
-                            Amazon.in
-                            <small>Opens inside this page</small>
-                        </button>
-                        <button class="shop-btn" type="button" onclick="openShop('flipkart')">
-                            Flipkart
-                            <small>Opens inside this page</small>
-                        </button>
-                        <button class="shop-btn" type="button" onclick="openShop('amazon-search')">
-                            Search on Amazon
-                            <small>Search the selected ad on Amazon.in</small>
-                        </button>
-                        <button class="shop-btn" type="button" onclick="openShop('flipkart-search')">
-                            Search on Flipkart
-                            <small>Search the selected ad on Flipkart</small>
-                        </button>
                     </div>
                 </div>
 
                 <div id="tab-official" class="tab-content">
                     <ul class="link-list">
-                        <li><button type="button" onclick="openOfficialLink('https://www.amazon.in/', 'Amazon.in homepage')">Amazon.in — homepage</button></li>
-                        <li><button type="button" onclick="openOfficialLink('https://www.flipkart.com/', 'Flipkart homepage')">Flipkart.com — homepage</button></li>
-                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=product+specifications+reviews', 'Specs & reviews search')">Google — specs &amp; reviews</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+website+specifications', 'Official website / specs')">Official website / specifications</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+pricing', 'Official pricing')">Official pricing information</button></li>
+                        <li><button type="button" onclick="openOfficialLink('https://www.google.com/search?q=official+product+FAQ+support', 'Official FAQ / support')">Official FAQ / support</button></li>
                     </ul>
                 </div>
             </div>
@@ -968,30 +961,35 @@
                 </div>
                 <div class="browser-frame-wrap">
                     <div id="browser-loading" class="browser-fallback">
-                        <strong>Loading page…</strong>
-                        <p>Keeping everything inside this survey window for recording.</p>
+                        <strong>Loading…</strong>
+                        <p>Page opens inside this survey window.</p>
                     </div>
                     <iframe
                         id="survey-browser-frame"
-                        title="Research browser"
+                        title="Search page"
                         referrerpolicy="no-referrer-when-downgrade"
                         sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-downloads"
                     ></iframe>
                 </div>
             </div>
 
+            <!-- Replay overlay for ad -->
+            <div id="replay-overlay" style="display:none; margin-top:20px;">
+                <h3 class="section-label">Advertisement replay</h3>
+                <div class="ad-viewport">
+                    <video id="replay-video" controls playsinline></video>
+                </div>
+            </div>
+
             <div class="button-container">
-                <button class="action-btn" type="button" onclick="goToStep(6)">Proceed to final questions</button>
+                <button class="action-btn" type="button" onclick="goToStep(7)">Continue</button>
             </div>
         </div>
 
-        <!-- STEP 6 -->
-        <div id="step-6" class="step">
-            <h2>Purchase intention</h2>
-            <p class="intro-text">Select the numbers that best match your likelihood of purchasing.</p>
-
+        <!-- STEP 7: Purchase intention Q7-Q10 (PDF) -->
+        <div id="step-7" class="step">
             <div class="question-block">
-                <div class="question-text">7. If I were going to purchase this type of product/service, I would consider purchasing the selected product/service.</div>
+                <div class="question-text">7. If I were going to purchase this type of product/service I would consider purchasing the selected product/service</div>
                 <div class="scale-row" data-scale="pi_q7"></div>
             </div>
             <div class="question-block">
@@ -1008,14 +1006,14 @@
             </div>
 
             <div class="button-container">
-                <button id="submit-btn" class="action-btn ok" type="button" onclick="submitSurvey()">Submit survey</button>
+                <button id="submit-btn" class="action-btn ok" type="button" onclick="submitSurvey()">Submit</button>
             </div>
             <div id="submit-status"></div>
         </div>
 
     </div>
 
-    <p class="footer-note">Search Study · Academic information-search research</p>
+    <p class="footer-note">Online Information Search Survey</p>
 </div>
 
 <script>
@@ -1031,6 +1029,17 @@
         'Ad 7': 'ads/ad7.mp4',
         'Ad 8': 'ads/ad8.mp4'
     };
+
+    const TOTAL_STEPS = 7;
+    const LIKERT_LABELS = [
+        'Strongly disagree',
+        'Disagree',
+        'Somewhat disagree',
+        'Neither agree nor disagree',
+        'Somewhat agree',
+        'Agree',
+        'Strongly agree'
+    ];
 
     let recorder = null;
     let chunks = [];
@@ -1076,15 +1085,15 @@
         document.querySelectorAll('.scale-row[data-scale]').forEach((row) => {
             const name = row.dataset.scale;
             row.innerHTML = `
-                <span class="scale-anchor">Strongly Disagree</span>
-                <div class="scale-options">
+                <div class="scale-options" style="width:100%;">
                     ${[1,2,3,4,5,6,7].map((n) => `
                         <label class="scale-option">
-                            <input type="radio" name="${name}" value="${n}"><span>${n}</span>
+                            <input type="radio" name="${name}" value="${n}">
+                            <span>${n}</span>
+                            <span style="font-size:0.65rem; max-width:4.5rem; text-align:center; line-height:1.2; margin-top:4px;">${LIKERT_LABELS[n-1]}</span>
                         </label>
                     `).join('')}
                 </div>
-                <span class="scale-anchor">Strongly Agree</span>
             `;
         });
     }
@@ -1124,10 +1133,10 @@
     function goToStep(stepNumber) {
         document.querySelectorAll('.step').forEach((step) => step.classList.remove('active'));
         document.getElementById(`step-${stepNumber}`).classList.add('active');
-        document.getElementById('survey-progress').style.width = `${(stepNumber / 6) * 100}%`;
-        document.getElementById('step-label').textContent = `Step ${stepNumber} of 6`;
+        document.getElementById('survey-progress').style.width = `${(stepNumber / TOTAL_STEPS) * 100}%`;
+        document.getElementById('step-label').textContent = `Step ${stepNumber} of ${TOTAL_STEPS}`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (stepNumber === 5 && !currentBrowserUrl) {
+        if (stepNumber === 6 && !currentBrowserUrl) {
             navigateSurveyBrowser('https://www.google.com/webhp?igu=1');
         }
     }
@@ -1196,7 +1205,7 @@
 
     function selectAd(adName) {
         selectedAdName = adName;
-        document.getElementById('current-ad-title').innerText = `${adName}`;
+        document.getElementById('current-ad-title').innerText = 'Ad. shown';
 
         const video = document.getElementById('ad-video');
         const fallback = document.getElementById('ad-viewport-text');
@@ -1210,31 +1219,71 @@
         video.onerror = () => {
             video.style.display = 'none';
             fallback.style.display = 'block';
-            fallback.innerHTML = `Video for <strong>${escapeHtml(adName)}</strong> not found yet.<br>Expected: <code>${escapeHtml(src)}</code>`;
+            fallback.innerHTML = `Video for <strong>${escapeHtml(adName)}</strong> not found.`;
         };
 
         video.play().catch(() => {});
         goToStep(3);
     }
 
-    function continueFromFeedback() {
-        if (!requireRadios(['fb_q1','fb_q2','fb_q3','fb_q4','fb_q5'], 'Please answer all ad feedback questions.')) return;
-        document.getElementById('ad-video').pause();
+    function replayAd() {
+        const src = AD_VIDEOS[selectedAdName];
+        if (!src) {
+            alert('No advertisement selected yet.');
+            return;
+        }
+
+        // Prefer in-step main player when on step 3
+        const mainVideo = document.getElementById('ad-video');
+        const overlay = document.getElementById('replay-overlay');
+        const replayVideo = document.getElementById('replay-video');
+
+        const activeStep = document.querySelector('.step.active');
+        if (activeStep && activeStep.id === 'step-3' && mainVideo) {
+            mainVideo.style.display = 'block';
+            document.getElementById('ad-viewport-text').style.display = 'none';
+            mainVideo.src = src;
+            mainVideo.load();
+            mainVideo.currentTime = 0;
+            mainVideo.play().catch(() => {});
+            mainVideo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        if (overlay && replayVideo) {
+            overlay.style.display = 'block';
+            replayVideo.src = src;
+            replayVideo.load();
+            replayVideo.currentTime = 0;
+            replayVideo.play().catch(() => {});
+            overlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // Fallback: jump back to ad step
+        goToStep(3);
+        setTimeout(() => {
+            mainVideo.src = src;
+            mainVideo.load();
+            mainVideo.play().catch(() => {});
+        }, 50);
+    }
+
+    function continueFromAdInfo() {
+        if (!requireRadios(['fb_q4','fb_q5'], 'Please answer questions 4 and 5.')) return;
+        const video = document.getElementById('ad-video');
+        if (video) video.pause();
         goToStep(4);
     }
 
-    function continueFromSemantic() {
-        if (!requireRadios(['sem_1','sem_2','sem_3','sem_4','sem_5'], 'Please complete all perception scales.')) return;
+    function continueFromFamiliarity() {
+        if (!requireRadios(['fb_q1','fb_q2','fb_q3'], 'Please answer questions 1, 2 and 3.')) return;
         goToStep(5);
     }
 
-    function rewatchAd() {
-        goToStep(3);
-        const video = document.getElementById('ad-video');
-        if (video.src) {
-            video.currentTime = 0;
-            video.play().catch(() => {});
-        }
+    function continueFromSemantic() {
+        if (!requireRadios(['sem_1','sem_2','sem_3','sem_4','sem_5'], 'Please complete all scales for question 6.')) return;
+        goToStep(6);
     }
 
     function switchSearchTab(event, tabId) {
