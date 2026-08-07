@@ -2346,9 +2346,10 @@
         submitBtn.disabled = true;
         setStatus('info', 'Preparing your submission...');
 
+        let videoBlob = null;
         try {
             // Recording should already have stopped after search; stop again safely if needed.
-            const videoBlob = await stopRecording();
+            videoBlob = await stopRecording();
 
             const answers = collectAnswers();
             let videoBase64 = '';
@@ -2389,12 +2390,7 @@
             setTimeout(() => location.reload(), 1400);
         } catch (err) {
             console.error(err);
-            try {
-                const videoBlob = await stopRecording();
-                downloadLocalBackup(videoBlob);
-            } catch (e2) {
-                downloadLocalBackup(null);
-            }
+            downloadLocalBackup(videoBlob);
             setStatus('err', 'Upload failed. A local backup was downloaded so data is not lost.');
             alert('Could not reach Google Sheets/Drive. A local backup was downloaded.');
             submitBtn.disabled = false;
