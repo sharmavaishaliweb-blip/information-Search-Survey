@@ -2383,8 +2383,9 @@
             const result = await response.json();
             if (!result.ok) throw new Error(result.error || 'Upload failed');
 
+            const driveNote = result.driveUrl ? ` Recording: ${result.driveUrl}` : '';
             setStatus('ok', `Submitted successfully.${result.driveUrl ? ' Drive URL saved in the sheet.' : ''}`);
-            alert('Thank you! Your responses were saved.');
+            alert('Thank you! Your responses were saved to Google Sheets.' + driveNote);
             setTimeout(() => location.reload(), 1400);
         } catch (err) {
             console.error(err);
