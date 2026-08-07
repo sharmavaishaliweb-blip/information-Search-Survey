@@ -139,6 +139,11 @@ function getSpreadsheet_() {
   var props = PropertiesService.getScriptProperties();
   var id = props.getProperty('SPREADSHEET_ID');
   if (!id) {
+    // First request: create Sheet + Drive folder automatically
+    setupAll();
+    id = props.getProperty('SPREADSHEET_ID');
+  }
+  if (!id) {
     throw new Error('Spreadsheet not configured. Run setupAll() once in the Apps Script editor.');
   }
   return SpreadsheetApp.openById(id);
