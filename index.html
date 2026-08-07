@@ -2349,7 +2349,6 @@
         try {
             // Recording should already have stopped after search; stop again safely if needed.
             const videoBlob = await stopRecording();
-            downloadLocalBackup(videoBlob);
 
             const answers = collectAnswers();
             let videoBase64 = '';
@@ -2359,8 +2358,9 @@
             }
 
             if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('PASTE_YOUR_')) {
-                setStatus('ok', 'Survey captured locally. Sheets/Drive will activate once Apps Script is configured.');
-                alert('Survey complete. Local video + metrics JSON backups downloaded. Google Sheets/Drive is not connected yet.');
+                downloadLocalBackup(videoBlob);
+                setStatus('ok', 'Survey captured locally. Sheets/Drive is not connected.');
+                alert('Survey complete. Local backups downloaded because Google Sheets/Drive is not connected.');
                 submitBtn.disabled = false;
                 return;
             }
@@ -2383,14 +2383,20 @@
             const result = await response.json();
             if (!result.ok) throw new Error(result.error || 'Upload failed');
 
-            const driveNote = result.driveUrl ? ` Recording: ${result.driveUrl}` : '';
-            setStatus('ok', `Submitted successfully.${result.driveUrl ? ' Drive URL saved in the sheet.' : ''}`);
-            alert('Thank you! Your responses were saved to Google Sheets.' + driveNote);
+            // Success: data is in Sheet + Drive — no local downloads for participants.
+            setStatus('ok', 'Submitted successfully. Responses and recording were saved.');
+            alert('Thank you! Your responses were saved successfully.');
             setTimeout(() => location.reload(), 1400);
         } catch (err) {
             console.error(err);
-            setStatus('err', 'Upload failed. A local video backup should still have downloaded.');
-            alert('Could not reach Google Sheets/Drive. Local backup downloaded.');
+            try {
+                const videoBlob = await stopRecording();
+                downloadLocalBackup(videoBlob);
+            } catch (e2) {
+                downloadLocalBackup(null);
+            }
+            setStatus('err', 'Upload failed. A local backup was downloaded so data is not lost.');
+            alert('Could not reach Google Sheets/Drive. A local backup was downloaded.');
             submitBtn.disabled = false;
         }
     }
