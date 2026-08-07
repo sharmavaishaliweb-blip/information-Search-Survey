@@ -1953,16 +1953,32 @@
     }
 
     async function callPollinationsChat(messages) {
-        const payloads = [
-            { url: 'https://text.pollinations.ai/openai', body: { model: 'openai', messages } },
-            { url: 'https://text.pollinations.ai/openai', body: { model: 'openai-fast', messages } },
-            { url: 'https://text.pollinations.ai/', body: { model: 'openai', messages, seed: Date.now() } }
+        const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n');
+        const systemText = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n');
+        const prompt = [systemText, userText].filter(Boolean).join('\n\n');
+
+        const attempts = [
+            // Probe showed this path can still succeed anonymously
+            {
+                kind: 'GET',
+                url: `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai-fast`
+            },
+            {
+                kind: 'GET',
+                url: `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`
+            },
+            { kind: 'POST', url: 'https://text.pollinations.ai/openai', body: { model: 'openai-fast', messages } },
+            { kind: 'POST', url: 'https://text.pollinations.ai/openai', body: { model: 'openai', messages } },
+            { kind: 'POST', url: 'https://text.pollinations.ai/', body: { model: 'openai', messages, seed: Date.now() } }
         ];
 
         let lastErr = null;
-        for (const attempt of payloads) {
+        for (const attempt of attempts) {
             try {
-                const res = await fetch(attempt.url, {
+                const res = await fetch(attempt.url, attempt.kind === 'GET' ? {
+                    method: 'GET',
+                    headers: { Accept: 'application/json, text/plain' }
+                } : {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/plain' },
                     body: JSON.stringify(attempt.body)
@@ -1976,7 +1992,6 @@
                     lastErr = new Error('Empty body');
                     continue;
                 }
-                // OpenAI-compatible JSON
                 if (raw.startsWith('{')) {
                     try {
                         const data = JSON.parse(raw);
@@ -1987,10 +2002,9 @@
                             || '';
                         if (String(content).trim()) return String(content).trim();
                     } catch (e) {
-                        // fall through to plain text
+                        // fall through
                     }
                 }
-                // Plain-text success (legacy)
                 if (!raw.startsWith('{') && !raw.startsWith('<')) return raw;
                 lastErr = new Error('Unrecognized response');
             } catch (err) {
