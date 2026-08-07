@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Search Study — Information Search Survey</title>
+<title>Online Information Search Behaviour Experimental Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -261,13 +261,14 @@
         background: var(--panel-solid);
         border: 1px solid var(--line);
         border-radius: 16px;
-        padding: 28px 14px;
+        padding: 22px 12px;
         font-family: var(--font-display);
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: var(--ink);
         cursor: pointer;
         transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        text-align: center;
     }
 
     .ad-btn::after {
@@ -750,8 +751,8 @@
 
 <div class="shell">
     <div class="brand-row">
-        <div class="brand-mark">Online Information <span>Search Survey</span></div>
-        <div class="step-chip" id="step-label">Step 1 of 7</div>
+        <div class="brand-mark">Online Information Search <span>Behaviour Experimental Platform</span></div>
+        <div class="step-chip" id="step-label">Step 1 of 8</div>
     </div>
 
     <div id="recording-indicator">
@@ -762,7 +763,7 @@
 
         <!-- STEP 1: Demographics (PDF) -->
         <div id="step-1" class="step active">
-            <h2>Online Information Search Survey</h2>
+            <h2>Online Information Search Behaviour Experimental Platform</h2>
             <div class="info-box">
                 All responses will remain anonymous and will be used solely for academic research purposes.
             </div>
@@ -828,22 +829,20 @@
         <!-- STEP 2: Ad selection (PDF) -->
         <div id="step-2" class="step">
             <div class="ad-grid">
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1<small>Laptop</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3<small>Footwear</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5<small>Courses</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7<small>Delivery</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2<small>Laptop</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4<small>Footwear</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6<small>Courses</small></button>
-                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8<small>Delivery</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 1')">Ad 1<small>Laptop (High Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 2')">Ad 2<small>Laptop (Low Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 3')">Ad 3<small>Footwear (High Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 4')">Ad 4<small>Footwear (Low Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 5')">Ad 5<small>Courses (High Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 6')">Ad 6<small>Courses (Low Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 7')">Ad 7<small>Delivery (High Message)</small></button>
+                <button class="ad-btn" type="button" onclick="selectAd('Ad 8')">Ad 8<small>Delivery (Low Message)</small></button>
             </div>
             <p class="intro-text">(select any one advertisement to continue)</p>
         </div>
 
         <!-- STEP 3: Ad + Q4 & Q5 only -->
         <div id="step-3" class="step">
-            <h2 id="current-ad-title">Ad. shown</h2>
-
             <div class="ad-viewport">
                 <video id="ad-video" controls playsinline>
                     Your browser does not support video playback.
@@ -877,10 +876,6 @@
         <div id="step-4" class="step">
             <h3 class="section-label">AD FEEDBACK:</h3>
 
-            <div class="button-container" style="margin-top:0; margin-bottom:20px;">
-                <button class="action-btn rose" type="button" onclick="replayAd()">Replay Ad</button>
-            </div>
-
             <div class="question-block">
                 <div class="question-text">1. I am familiar with this product/service.</div>
                 <div class="scale-row" data-scale="fb_q1"></div>
@@ -899,7 +894,7 @@
             </div>
         </div>
 
-        <!-- STEP 5: Q6 semantic (PDF) -->
+        <!-- STEP 5: Q6 semantic -->
         <div id="step-5" class="step">
             <p class="intro-text" style="text-align:left;">
                 6. Please think about this type of product/service in general. Indicate how you would describe it by selecting the point that best represents your opinion.
@@ -916,26 +911,30 @@
             </div>
         </div>
 
-        <!-- STEP 6: Search situation (category sites) -->
+        <!-- STEP 6: Search instructions (recording starts on Continue) -->
         <div id="step-6" class="step">
-            <p class="intro-text" style="text-align:left; margin-bottom:12px;">
-                You have now viewed the advertisement
-            </p>
-            <div class="button-container" style="margin-top:0; margin-bottom:20px; justify-content:flex-start;">
-                <button class="action-btn rose" type="button" onclick="replayAd()">Rewatch again</button>
+            <div class="info-box" style="text-align:left;">
+                <p style="margin:0 0 14px;"><strong>You have now viewed the advertisement.</strong></p>
+                <p style="margin:0 0 14px;">Now imagine that you are considering purchasing this product or service.</p>
+                <p style="margin:0 0 14px;">Before making your decision, you can explore additional information using the search interfaces provided on the next page. You are free to use Google Search, the AI chatbot, the official website links, or any combination of these.</p>
+                <p style="margin:0 0 14px;">From this point onward, your interactions with the search interfaces will be recorded for research purposes. Please use the search tools naturally, just as you would in a real-life situation.</p>
+                <p style="margin:0;">Once you feel you have gathered enough information and are ready to make your decision, click Continue to proceed to the final set of questions.</p>
             </div>
 
-            <div class="info-box">
-                Please carefully read the situation below, then explore using the website buttons, Google search, and/or the AI chatbot — just as you would in everyday life. There is no time limit. When you have enough information and are ready to decide, click Continue for the last few questions.
-                <br><br>
-                Your screen is being recorded on this search page only. Recording stops when you click Continue. Search behaviour metrics are also logged automatically.
+            <div class="button-container">
+                <button class="action-btn" type="button" onclick="continueToSearchPage()">Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 7: Search interfaces + Rewatch Ad -->
+        <div id="step-7" class="step">
+            <div class="button-container" style="margin-top:0; margin-bottom:20px; justify-content:flex-start;">
+                <button class="action-btn rose" type="button" onclick="replayAd()">Rewatch Ad</button>
             </div>
 
             <h3 class="section-label">SEARCH PAGE</h3>
 
             <div class="search-container">
-                <p class="scenario-prompt" id="scenario-prompt">Please carefully read the following introductory text.</p>
-                <p class="scenario-text" id="scenario-text"></p>
                 <p class="search-boxes-label">You can now click on Search boxes below 👇</p>
                 <div class="shop-grid" id="search-site-buttons"></div>
 
@@ -957,10 +956,6 @@
                         <button class="action-btn" type="button" onclick="sendChatMessage()">Send</button>
                     </div>
                 </div>
-
-                <p class="metrics-note">
-                    Note: Scroll depth on Google and shopping sites opened in new tabs cannot be read by the browser for privacy reasons; those CT values are left for coding from the screen recording. AI scroll and all selection/timing/query metrics are captured automatically.
-                </p>
             </div>
 
             <!-- Replay overlay for ad -->
@@ -976,8 +971,8 @@
             </div>
         </div>
 
-        <!-- STEP 7: Purchase intention Q7-Q10 (PDF) -->
-        <div id="step-7" class="step">
+        <!-- STEP 8: Purchase intention Q7-Q10 -->
+        <div id="step-8" class="step">
             <div class="question-block">
                 <div class="question-text">7. If I were going to purchase this type of product/service I would consider purchasing the selected product/service</div>
                 <div class="scale-row" data-scale="pi_q7"></div>
@@ -1003,7 +998,7 @@
 
     </div>
 
-    <p class="footer-note">Online Information Search Survey</p>
+    <p class="footer-note">Online Information Search Behaviour Experimental Platform</p>
 </div>
 
 <script>
@@ -1093,7 +1088,7 @@
         }
     };
 
-    const TOTAL_STEPS = 7;
+    const TOTAL_STEPS = 8;
     const LIKERT_LABELS = [
         'Strongly disagree',
         'Disagree',
@@ -1511,14 +1506,11 @@
         document.getElementById('survey-progress').style.width = `${(stepNumber / TOTAL_STEPS) * 100}%`;
         document.getElementById('step-label').textContent = `Step ${stepNumber} of ${TOTAL_STEPS}`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (stepNumber === 6) renderSearchSituation();
+        if (stepNumber === 7) renderSearchSituation();
     }
 
     function renderSearchSituation() {
         const situation = SEARCH_SITUATIONS[selectedAdName] || SEARCH_SITUATIONS['Ad 1'];
-        document.getElementById('scenario-prompt').textContent = situation.prompt;
-        document.getElementById('scenario-text').textContent = situation.text;
-
         const grid = document.getElementById('search-site-buttons');
         grid.innerHTML = situation.sites.map((site) => `
             <button class="shop-btn" type="button"
@@ -1546,7 +1538,7 @@
     async function continueFromSearch() {
         finalizeSearchMetrics();
         await stopRecording();
-        goToStep(7);
+        goToStep(8);
     }
 
     function startSurvey() {
@@ -1608,7 +1600,7 @@
             console.error('getDisplayMedia failed:', err);
             const msg = String(err && err.name ? err.name : err);
             if (msg.includes('NotAllowedError') || msg.includes('PermissionDeniedError')) {
-                alert('Screen share is required on the search page. Click Continue again and choose “Entire Screen” or this browser window.');
+                alert('Screen share is required before the search page. Click Continue again and choose “Entire Screen” or this browser window.');
             } else if (msg.includes('NotFoundError') || msg.includes('NotReadableError')) {
                 alert('No screen was available to share. Please try again.');
             } else {
@@ -1620,7 +1612,6 @@
 
     function selectAd(adName) {
         selectedAdName = adName;
-        document.getElementById('current-ad-title').innerText = 'Ad. shown';
 
         const video = document.getElementById('ad-video');
         const fallback = document.getElementById('ad-viewport-text');
@@ -1696,15 +1687,17 @@
         goToStep(5);
     }
 
-    async function continueFromSemantic() {
+    function continueFromSemantic() {
         if (!requireRadios(['sem_1','sem_2','sem_3','sem_4','sem_5'], 'Please complete all scales for question 6.')) return;
+        // Do not start recording here — recording begins only after the search-instruction Continue.
+        goToStep(6);
+    }
 
-        // Screen recording starts only when entering the search page
+    async function continueToSearchPage() {
         const ok = await startSearchRecording();
         if (!ok) return;
-
         initSearchMetrics();
-        goToStep(6);
+        goToStep(7);
     }
 
     function switchSearchTab(event, tabId) {
@@ -1959,6 +1952,161 @@
         navigateSurveyBrowser(url);
     }
 
+    async function callPollinationsChat(messages) {
+        const payloads = [
+            { url: 'https://text.pollinations.ai/openai', body: { model: 'openai', messages } },
+            { url: 'https://text.pollinations.ai/openai', body: { model: 'openai-fast', messages } },
+            { url: 'https://text.pollinations.ai/', body: { model: 'openai', messages, seed: Date.now() } }
+        ];
+
+        let lastErr = null;
+        for (const attempt of payloads) {
+            try {
+                const res = await fetch(attempt.url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/plain' },
+                    body: JSON.stringify(attempt.body)
+                });
+                const raw = (await res.text()).trim();
+                if (!res.ok) {
+                    lastErr = new Error('HTTP ' + res.status + ' ' + raw.slice(0, 120));
+                    continue;
+                }
+                if (!raw) {
+                    lastErr = new Error('Empty body');
+                    continue;
+                }
+                // OpenAI-compatible JSON
+                if (raw.startsWith('{')) {
+                    try {
+                        const data = JSON.parse(raw);
+                        const content = data?.choices?.[0]?.message?.content
+                            || data?.message?.content
+                            || data?.content
+                            || data?.text
+                            || '';
+                        if (String(content).trim()) return String(content).trim();
+                    } catch (e) {
+                        // fall through to plain text
+                    }
+                }
+                // Plain-text success (legacy)
+                if (!raw.startsWith('{') && !raw.startsWith('<')) return raw;
+                lastErr = new Error('Unrecognized response');
+            } catch (err) {
+                lastErr = err;
+            }
+        }
+        throw lastErr || new Error('All Pollinations attempts failed');
+    }
+
+    async function callPuterChat(messages) {
+        if (!window.puter || !window.puter.ai || typeof window.puter.ai.chat !== 'function') {
+            throw new Error('Puter unavailable');
+        }
+        const result = await window.puter.ai.chat(messages, { model: 'gpt-4o-mini' });
+        if (typeof result === 'string' && result.trim()) return result.trim();
+        if (result && typeof result === 'object') {
+            const text = result.message?.content || result.text || result.output || '';
+            if (String(text).trim()) return String(text).trim();
+        }
+        throw new Error('Empty Puter response');
+    }
+
+    function getAdCategoryKey() {
+        const map = {
+            'Ad 1': 'laptop', 'Ad 2': 'laptop',
+            'Ad 3': 'footwear', 'Ad 4': 'footwear',
+            'Ad 5': 'courses', 'Ad 6': 'courses',
+            'Ad 7': 'delivery', 'Ad 8': 'delivery'
+        };
+        return map[selectedAdName] || 'general';
+    }
+
+    function localResearchAssistant(query) {
+        const q = String(query || '').toLowerCase();
+        const category = getAdCategoryKey();
+        const situation = (SEARCH_SITUATIONS[selectedAdName] || {}).text || '';
+        const tips = {
+            laptop: [
+                'Compare RAM (16 GB+), storage (SSD), screen size (14–15"), battery life, and MS Office support.',
+                'Check recent customer reviews for heating, keyboard feel, and after-sales service.',
+                'Use Flipkart, Amazon, Croma, and Reliance Digital to compare price, exchange offers, and warranty.',
+                'Keep a budget range (for example 40,000–80,000) and shortlist 2–3 models before deciding.'
+            ],
+            footwear: [
+                'For mountain/trek use, prioritise grip, waterproofing, ankle support, breathability, and weight.',
+                'Compare fit guides and return policies because sizing varies by brand.',
+                'Check discounts and reviews on Flipkart, Amazon, Myntra, Ajio, and Nykaa Fashion.',
+                'Look at sole material and customer photos for real-world durability.'
+            ],
+            courses: [
+                'Compare syllabus depth, instructor quality, certificate value, and time flexibility.',
+                'Check whether the course matches your career goal (business, analytics, marketing, etc.).',
+                'Review ratings and completion requirements on Coursera, edX, Udemy, LinkedIn Learning, and SWAYAM.',
+                'Prefer courses with projects or assessments if you want proof of skill.'
+            ],
+            delivery: [
+                'Compare delivery time, item availability nearby, and total price including fees.',
+                'For chilled drinks, check freshness, packaging, and estimated arrival.',
+                'Try Blinkit, Zepto, Swiggy Instamart, Zomato, or BigBasket based on speed and offers.',
+                'Confirm your delivery location/serviceability before finalising.'
+            ],
+            general: [
+                'List your must-have criteria first (budget, quality, delivery, warranty/returns).',
+                'Compare at least two sources before deciding.',
+                'Read recent reviews and check return/cancellation policies.',
+                'Avoid rushing; gather enough information to feel confident.'
+            ]
+        };
+
+        let focus = 'general comparison advice';
+        if (/price|cost|budget|cheap|expensive|₹|rs\b|rupee/.test(q)) focus = 'pricing and value-for-money';
+        else if (/review|rating|feedback|complaint/.test(q)) focus = 'reviews and reliability';
+        else if (/compare|vs|versus|difference|better/.test(q)) focus = 'comparison across options';
+        else if (/spec|feature|ram|battery|waterproof|certificate|syllabus|delivery time|eta/.test(q)) focus = 'key specifications/features';
+        else if (/where|site|website|app|buy|order/.test(q)) focus = 'where to search/buy';
+        else if (/warranty|return|refund|cancel/.test(q)) focus = 'warranty/returns';
+
+        const points = tips[category] || tips.general;
+        const opener = situation
+            ? `Based on your situation (${category}), here is practical guidance focused on ${focus}:`
+            : `Here is practical guidance focused on ${focus}:`;
+
+        return [
+            opener,
+            ...points.map((p, i) => `${i + 1}. ${p}`),
+            '',
+            `You asked: “${String(query).trim()}”`,
+            'Next step: open the website buttons or Google Search above and verify live prices, availability, and reviews before deciding.'
+        ].join('\n');
+    }
+
+    async function generateAiReply(query) {
+        const system = `You are a helpful shopping research assistant for an academic study. The participant selected "${selectedAdName || 'an advertisement'}" (${getAdCategoryKey()}). Give concise, practical answers in plain language. Do not ask the user to log in or create accounts.`;
+        const messages = [
+            { role: 'system', content: system },
+            { role: 'user', content: query }
+        ];
+
+        // 1) Free Pollinations endpoints (best effort)
+        try {
+            return await callPollinationsChat(messages);
+        } catch (e1) {
+            console.warn('Pollinations failed', e1);
+        }
+
+        // 2) Puter.js if already available in the page
+        try {
+            return await callPuterChat(messages);
+        } catch (e2) {
+            console.warn('Puter failed', e2);
+        }
+
+        // 3) Always-available local research assistant (keeps the study usable)
+        return localResearchAssistant(query);
+    }
+
     async function sendChatMessage() {
         const chatInput = document.getElementById('chat-input');
         const chatBox = document.getElementById('chat-box');
@@ -1981,40 +2129,16 @@
         attachAiScrollTracking(responseEl, responseId);
 
         try {
-            const system = `You are a helpful shopping research assistant. The participant is studying an advertisement labeled "${selectedAdName || 'the selected product'}". Give concise, practical answers. No login or account talk.`;
-            const prompt = `${system}\n\nUser: ${query}`;
-
-            const res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt) + '?model=openai&personality=helpful');
-            if (!res.ok) throw new Error('AI HTTP ' + res.status);
-            const text = (await res.text()).trim();
-            if (!text) throw new Error('Empty AI response');
-            responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(text)}`;
+            const text = await generateAiReply(query);
+            responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(text).replace(/\n/g, '<br>')}`;
             chatMessages.push({ role: 'ai', text, at: new Date().toISOString(), responseId });
             logRawEvent('ai_response', 'ai', { responseId, chars: text.length });
         } catch (err) {
             console.error(err);
-            try {
-                const res2 = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages: [
-                            { role: 'system', content: `Help with product research for "${selectedAdName || 'the product'}". Be concise.` },
-                            { role: 'user', content: query }
-                        ],
-                        model: 'openai',
-                        private: true
-                    })
-                });
-                const text2 = (await res2.text()).trim();
-                if (!res2.ok || !text2) throw new Error('fallback failed');
-                responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(text2)}`;
-                chatMessages.push({ role: 'ai', text: text2, at: new Date().toISOString(), responseId });
-                logRawEvent('ai_response', 'ai', { responseId, chars: text2.length });
-            } catch (err2) {
-                responseEl.innerHTML = `<strong>AI:</strong> Sorry — the free AI is briefly unavailable. Please try Google or the website buttons above.`;
-                logRawEvent('ai_error', 'ai', { responseId });
-            }
+            const fallback = localResearchAssistant(query);
+            responseEl.innerHTML = `<strong>AI:</strong> ${escapeHtml(fallback).replace(/\n/g, '<br>')}`;
+            chatMessages.push({ role: 'ai', text: fallback, at: new Date().toISOString(), responseId, fallback: true });
+            logRawEvent('ai_fallback', 'ai', { responseId });
         } finally {
             chatBusy = false;
             chatBox.scrollTop = chatBox.scrollHeight;
