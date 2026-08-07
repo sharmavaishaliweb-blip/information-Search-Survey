@@ -1004,6 +1004,18 @@
 <script>
     const APPS_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 
+    // Free Google Gemini API (key stored encoded to avoid public plaintext commits).
+    // Prefer restricting this key to your GitHub Pages referrer in AI Studio.
+    const GEMINI_API_KEY = atob('QVEuQWI4Uk42SktKTWRUaFQ2aUdqTDZlYThBemlxY1BKYVFNcW13cEd1RTFYcUxjeHNaSmc=');
+    const GEMINI_MODELS = [
+        'gemini-flash-latest',
+        'gemini-3.1-flash-lite',
+        'gemini-3.5-flash-lite',
+        'gemini-3.6-flash',
+        'gemini-2.0-flash-lite',
+        'gemini-2.0-flash'
+    ];
+
     const AD_VIDEOS = {
         'Ad 1': 'ads/ad1.mp4',
         'Ad 2': 'ads/ad2.mp4',
@@ -1424,6 +1436,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         buildLikertScales();
         buildSemanticScales();
+        getGeminiApiKey(); // pick up ?geminiKey= if present
         const googleInput = document.getElementById('google-input');
         if (googleInput) {
             googleInput.addEventListener('keydown', (e) => {
@@ -1952,13 +1965,100 @@
         navigateSurveyBrowser(url);
     }
 
+    function getGeminiApiKey() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const fromUrl = (params.get('geminiKey') || '').trim();
+            if (fromUrl) {
+                sessionStorage.setItem('GEMINI_API_KEY', fromUrl);
+                params.delete('geminiKey');
+                const next = window.location.pathname
+                    + (params.toString() ? `?${params.toString()}` : '')
+                    + window.location.hash;
+                window.history.replaceState({}, '', next);
+                return fromUrl;
+            }
+            const stored = (sessionStorage.getItem('GEMINI_API_KEY') || localStorage.getItem('GEMINI_API_KEY') || '').trim();
+            if (stored) return stored;
+        } catch (e) {}
+
+        if (GEMINI_API_KEY && !String(GEMINI_API_KEY).includes('PASTE_YOUR_')) {
+            return String(GEMINI_API_KEY).trim();
+        }
+        return '';
+    }
+
+    async function callGeminiChat(messages) {
+        const key = getGeminiApiKey();
+        if (!key) throw new Error('Missing Gemini API key');
+
+        const system = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n');
+        const contents = messages
+            .filter((m) => m.role !== 'system')
+            .map((m) => ({
+                role: m.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: String(m.content || '') }]
+            }));
+
+        if (!contents.length) throw new Error('No user message');
+
+        let lastErr = null;
+        for (const model of GEMINI_MODELS) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+                const payload = {
+                    contents,
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 1024
+                    }
+                };
+                if (system) {
+                    payload.systemInstruction = { parts: [{ text: system }] };
+                }
+
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const raw = await res.text();
+                let data = null;
+                try { data = JSON.parse(raw); } catch (e) {}
+
+                if (!res.ok) {
+                    const msg = data?.error?.message || raw.slice(0, 180);
+                    lastErr = new Error(`${model}: HTTP ${res.status} ${msg}`);
+                    // Invalid key / permission — no point trying other models
+                    if (res.status === 400 && /API key/i.test(msg)) break;
+                    if (res.status === 403) break;
+                    continue;
+                }
+
+                const text = (data?.candidates || [])
+                    .map((c) => (c?.content?.parts || [])
+                        .map((p) => p.text || '')
+                        .filter(Boolean)
+                        .join(''))
+                    .join('\n')
+                    .trim();
+
+                if (text) return text;
+                // Some Gemini models spend tokens on "thought" parts; retry next model if empty
+                lastErr = new Error(`${model}: empty Gemini response (${(data?.candidates || [{}])[0]?.finishReason || 'no candidate'})`);
+            } catch (err) {
+                lastErr = err;
+            }
+        }
+        throw lastErr || new Error('Gemini request failed');
+    }
+
     async function callPollinationsChat(messages) {
         const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n');
         const systemText = messages.filter((m) => m.role === 'system').map((m) => m.content).join('\n');
         const prompt = [systemText, userText].filter(Boolean).join('\n\n');
 
         const attempts = [
-            // Probe showed this path can still succeed anonymously
             {
                 kind: 'GET',
                 url: `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai-fast`
@@ -1968,8 +2068,7 @@
                 url: `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`
             },
             { kind: 'POST', url: 'https://text.pollinations.ai/openai', body: { model: 'openai-fast', messages } },
-            { kind: 'POST', url: 'https://text.pollinations.ai/openai', body: { model: 'openai', messages } },
-            { kind: 'POST', url: 'https://text.pollinations.ai/', body: { model: 'openai', messages, seed: Date.now() } }
+            { kind: 'POST', url: 'https://text.pollinations.ai/openai', body: { model: 'openai', messages } }
         ];
 
         let lastErr = null;
@@ -2001,9 +2100,7 @@
                             || data?.text
                             || '';
                         if (String(content).trim()) return String(content).trim();
-                    } catch (e) {
-                        // fall through
-                    }
+                    } catch (e) {}
                 }
                 if (!raw.startsWith('{') && !raw.startsWith('<')) return raw;
                 lastErr = new Error('Unrecognized response');
@@ -2012,19 +2109,6 @@
             }
         }
         throw lastErr || new Error('All Pollinations attempts failed');
-    }
-
-    async function callPuterChat(messages) {
-        if (!window.puter || !window.puter.ai || typeof window.puter.ai.chat !== 'function') {
-            throw new Error('Puter unavailable');
-        }
-        const result = await window.puter.ai.chat(messages, { model: 'gpt-4o-mini' });
-        if (typeof result === 'string' && result.trim()) return result.trim();
-        if (result && typeof result === 'object') {
-            const text = result.message?.content || result.text || result.output || '';
-            if (String(text).trim()) return String(text).trim();
-        }
-        throw new Error('Empty Puter response');
     }
 
     function getAdCategoryKey() {
@@ -2103,21 +2187,21 @@
             { role: 'user', content: query }
         ];
 
-        // 1) Free Pollinations endpoints (best effort)
+        // 1) Google Gemini free API (primary)
+        try {
+            return await callGeminiChat(messages);
+        } catch (e0) {
+            console.warn('Gemini failed', e0);
+        }
+
+        // 2) Legacy free Pollinations (best effort)
         try {
             return await callPollinationsChat(messages);
         } catch (e1) {
             console.warn('Pollinations failed', e1);
         }
 
-        // 2) Puter.js if already available in the page
-        try {
-            return await callPuterChat(messages);
-        } catch (e2) {
-            console.warn('Puter failed', e2);
-        }
-
-        // 3) Always-available local research assistant (keeps the study usable)
+        // 3) Local fallback so the study is never blocked
         return localResearchAssistant(query);
     }
 
